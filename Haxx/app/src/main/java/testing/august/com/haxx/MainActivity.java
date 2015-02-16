@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import testing.august.com.haxx.R;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -20,11 +18,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         //Starta Task
-        try{
+        try {
             //url = nedladdningslänk
             URL url = new URL("http://example.com/");
             new DownloadWeatherDataTask().execute(url);
-        }catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
@@ -60,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
 
             //Starta JSON nedladding + parse
 
-            for(URL url : urls){
+            for (URL url : urls) {
                 System.out.println(url);
             }
 
