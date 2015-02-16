@@ -6,13 +6,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import testing.august.com.haxx.R;
+import testing.august.com.haxx.pojo.Location;
+import testing.august.com.haxx.pojo.TimeSeries;
 
 
 public class MainActivity extends ActionBarActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
         //Starta Task
         try{
             //url = nedladdningslänk
-            URL url = new URL("http://example.com/");
+            URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/58.59/lon/16.18/data.json");
             new DownloadWeatherDataTask().execute(url);
         }catch (MalformedURLException e){
             e.printStackTrace();
@@ -60,8 +67,31 @@ public class MainActivity extends ActionBarActivity {
 
             //Starta JSON nedladding + parse
 
+
+
             for(URL url : urls){
-                System.out.println(url);
+                JSONObject json = DownloadWeather.downloadWeather(url);
+                Location location = JSONparser.parseJSONobject(json);
+
+                    System.out.println("START!!!!!!!!!!!");
+                    System.out.println(location.getLatitude());
+                    System.out.println(location.getLongitude());
+                    System.out.println(location.getReferenceTime());
+
+                    ArrayList<TimeSeries> a = location.getTimeSeries();
+
+                    for(TimeSeries t :a){
+                        System.out.println("TIMESERIES*****************************************");
+                        System.out.println(t.getAirTemperature());
+                        System.out.println(t.getAmountOfCloudHigh());
+                        System.out.println(t.getAmountOfCloudLow());
+                        System.out.println(t.getTime());
+                        System.out.println(t.getPrecipitationSnow());
+
+                    }
+
+                    System.out.println("END!!!!!!!!!!!");
+
             }
 
 
