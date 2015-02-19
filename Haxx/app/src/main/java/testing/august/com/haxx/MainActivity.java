@@ -11,11 +11,22 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +40,7 @@ import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
 
-public class MainActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback,View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -39,12 +50,24 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     private static final String DIALOG_ERROR = "dialog_error";
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
-
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
+
+    EditText searchBox;
+    Button search;
+    MapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        searchBox =(EditText)findViewById(R.id.etSearchBox);
+        search = ( Button)findViewById(R.id.btnSearch);
+        search.setOnClickListener(this);
+
+        mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
 
         //Starta Task
 
@@ -141,6 +164,30 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     /* Called from ErrorDialogFragment when the dialog is dismissed. */
     public void onDialogDismissed() {
         mResolvingError = false;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(41.889, -87.622), 16));
+
+        // You can customize the marker image using images bundled with
+        // your app, or dynamically generated bitmaps.
+        map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
+                .position(new LatLng(41.889, -87.622)));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+
+            case R.id.btnSearch:
+                String ourAddress;
+                ourAddress = searchBox.getText().toString();
+                new HaxxGeoCoder().getLatLongFromAddress(ourAddress);
+                break;
+        }
     }
 
     /* A fragment to display an error dialog */
