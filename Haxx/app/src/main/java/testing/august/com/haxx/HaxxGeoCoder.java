@@ -36,11 +36,13 @@ public class HaxxGeoCoder {
 
     }
 
-    private class getAddressTask extends AsyncTask<String, Integer, Long> {
+    private class getAddressTask extends AsyncTask<String, Integer, double[]> {
 
         //Tunga arbetet här
         @Override
-        protected Long doInBackground(String... urls) {
+        protected double[] doInBackground(String... urls) {
+
+            double[] latlnglist = new double[2];
 
             //Starta JSON nedladding + parse
             for(String uri : urls){
@@ -75,7 +77,8 @@ public class HaxxGeoCoder {
                     double lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
                             .getJSONObject("geometry").getJSONObject("location")
                             .getDouble("lat");
-
+                    latlnglist[0] = lng;
+                    latlnglist[1] = lat;
                     Log.d("latitude", "" + lat);
                     Log.d("longitude", "" + lng);
                 } catch (JSONException e) {
@@ -86,7 +89,7 @@ public class HaxxGeoCoder {
 
             //Används för att uppdatera progress
             publishProgress();
-            return null;
+            return latlnglist;
         }
 
         //Uppdatera progress
@@ -97,8 +100,9 @@ public class HaxxGeoCoder {
 
         //Efter tråden är färdig
         @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
+        protected void onPostExecute(double[] latlnglist) {
+            super.onPostExecute(latlnglist);
+
         }
     }
 }
