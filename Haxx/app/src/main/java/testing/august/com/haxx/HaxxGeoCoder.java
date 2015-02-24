@@ -26,6 +26,15 @@ import testing.august.com.haxx.pojo.TimeSeries;
  */
 public class HaxxGeoCoder {
 
+    private GeoCoderCallback callback;
+
+    public interface GeoCoderCallback{
+        public void geoCoderCallback(double[] latlnglist);
+    }
+
+    public void setCallback(GeoCoderCallback callback) {
+        this.callback = callback;
+    }
 
     public void getLatLongFromAddress(String youraddress) {
         String uri = "http://maps.google.com/maps/api/geocode/json?address=" +
@@ -79,8 +88,6 @@ public class HaxxGeoCoder {
                             .getDouble("lat");
                     latlnglist[0] = lng;
                     latlnglist[1] = lat;
-                    Log.d("latitude", "" + lat);
-                    Log.d("longitude", "" + lng);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -102,7 +109,7 @@ public class HaxxGeoCoder {
         @Override
         protected void onPostExecute(double[] latlnglist) {
             super.onPostExecute(latlnglist);
-
+            callback.geoCoderCallback(latlnglist);
         }
     }
 }

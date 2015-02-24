@@ -40,7 +40,7 @@ import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
 
-public class MainActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback,View.OnClickListener {
+public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCoderCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback,View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -185,9 +185,24 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
             case R.id.btnSearch:
                 String ourAddress;
                 ourAddress = searchBox.getText().toString();
-                new HaxxGeoCoder().getLatLongFromAddress(ourAddress);
+                HaxxGeoCoder geoCoder = new HaxxGeoCoder();
+                geoCoder.setCallback(this);
+                geoCoder.getLatLongFromAddress(ourAddress);
                 break;
         }
+    }
+
+    @Override
+    public void geoCoderCallback(double[] latlnglist) {
+        GoogleMap map = mapFragment.getMap();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(latlnglist[1], latlnglist[0]), 16));
+
+        // You can customize the marker image using images bundled with
+        // your app, or dynamically generated bitmaps.
+        map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
+                .position(new LatLng(latlnglist[1], latlnglist[0])));
     }
 
     /* A fragment to display an error dialog */
