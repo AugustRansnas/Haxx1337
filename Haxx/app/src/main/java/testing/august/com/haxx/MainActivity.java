@@ -8,15 +8,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -26,21 +26,20 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
 
-public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCoderCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,OnMapReadyCallback,View.OnClickListener {
+public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCoderCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -52,16 +51,19 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
     private boolean mResolvingError = false;
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
 
+    private ActionMode mActionMode;
+
     EditText searchBox;
     Button search;
     MapFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchBox =(EditText)findViewById(R.id.etSearchBox);
-        search = ( Button)findViewById(R.id.btnSearch);
+        searchBox = (EditText) findViewById(R.id.etSearchBox);
+        search = (Button) findViewById(R.id.btnSearch);
         search.setOnClickListener(this);
 
         mapFragment = (MapFragment) getFragmentManager()
@@ -71,7 +73,7 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
 
         //Starta Task
 
-         mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -87,13 +89,13 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
-    protected void initiate(){
+    protected void initiate() {
 
-        try{
+        try {
             //url = nedladdningslänk
             URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/58.59/lon/16.18/data.json");
             new DownloadWeatherDataTask().execute(url);
-        }catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
@@ -180,7 +182,7 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
 
             case R.id.btnSearch:
                 String ourAddress;
@@ -193,7 +195,7 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
     }
 
     @Override
-    public void geoCoderCallback(double[] latlnglist) {
+    public void geoCoderCallback(double[] latlnglist, String address) {
         GoogleMap map = mapFragment.getMap();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latlnglist[1], latlnglist[0]), 16));
@@ -203,11 +205,29 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
         map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
                 .position(new LatLng(latlnglist[1], latlnglist[0])));
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                LatLng latlng = marker.getPosition();
+
+                if (mActionMode != null) {
+                    return false;
+                }
+
+                // Start the CAB using the ActionMode.Callback defined above
+                mActionMode = startActionMode(mActionModeCallback);
+                return false;
+            }
+        });
+
+
     }
 
     /* A fragment to display an error dialog */
     public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
+        public ErrorDialogFragment() {
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -219,7 +239,7 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((MainActivity)getActivity()).onDialogDismissed();
+            ((MainActivity) getActivity()).onDialogDismissed();
         }
     }
 
@@ -259,6 +279,48 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
         return super.onOptionsItemSelected(item);
     }
 
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.showWeather:
+
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                case R.id.addToFavorites:
+
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
+
     private class DownloadWeatherDataTask extends AsyncTask<URL, Integer, Long> {
 
         //Tunga arbetet här
@@ -266,28 +328,28 @@ public class MainActivity extends FragmentActivity implements HaxxGeoCoder.GeoCo
         protected Long doInBackground(URL... urls) {
 
             //Starta JSON nedladding + parse
-            for(URL url : urls){
+            for (URL url : urls) {
                 JSONObject json = DownloadWeather.downloadWeather(url);
                 Location location = JSONparser.parseJSONobject(json);
 
-                    System.out.println("START!!!!!!!!!!!");
-                    System.out.println(location.getLatitude());
-                    System.out.println(location.getLongitude());
-                    System.out.println(location.getReferenceTime());
+                System.out.println("START!!!!!!!!!!!");
+                System.out.println(location.getLatitude());
+                System.out.println(location.getLongitude());
+                System.out.println(location.getReferenceTime());
 
-                    ArrayList<TimeSeries> a = location.getTimeSeries();
+                ArrayList<TimeSeries> a = location.getTimeSeries();
 
-                    for(TimeSeries t :a){
-                        System.out.println("TIMESERIES*****************************************");
-                        System.out.println(t.getAirTemperature());
-                        System.out.println(t.getAmountOfCloudHigh());
-                        System.out.println(t.getAmountOfCloudLow());
-                        System.out.println(t.getTime());
-                        System.out.println(t.getPrecipitationSnow());
+                for (TimeSeries t : a) {
+                    System.out.println("TIMESERIES*****************************************");
+                    System.out.println(t.getAirTemperature());
+                    System.out.println(t.getAmountOfCloudHigh());
+                    System.out.println(t.getAmountOfCloudLow());
+                    System.out.println(t.getTime());
+                    System.out.println(t.getPrecipitationSnow());
 
-                    }
+                }
 
-                    System.out.println("END!!!!!!!!!!!");
+                System.out.println("END!!!!!!!!!!!");
             }
 
             //Används för att uppdatera progress

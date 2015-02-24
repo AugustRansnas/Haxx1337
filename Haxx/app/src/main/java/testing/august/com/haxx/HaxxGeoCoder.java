@@ -27,18 +27,20 @@ import testing.august.com.haxx.pojo.TimeSeries;
 public class HaxxGeoCoder {
 
     private GeoCoderCallback callback;
+    private String address;
 
     public interface GeoCoderCallback{
-        public void geoCoderCallback(double[] latlnglist);
+        public void geoCoderCallback(double[] latlnglist,String address);
     }
 
     public void setCallback(GeoCoderCallback callback) {
         this.callback = callback;
     }
 
-    public void getLatLongFromAddress(String youraddress) {
+    public void getLatLongFromAddress(String address) {
         String uri = "http://maps.google.com/maps/api/geocode/json?address=" +
-                youraddress + "&sensor=false";
+                address + "&sensor=false";
+        this.address = address;
 
         new getAddressTask().execute(uri);
 
@@ -109,7 +111,7 @@ public class HaxxGeoCoder {
         @Override
         protected void onPostExecute(double[] latlnglist) {
             super.onPostExecute(latlnglist);
-            callback.geoCoderCallback(latlnglist);
+            callback.geoCoderCallback(latlnglist,address);
         }
     }
 }
