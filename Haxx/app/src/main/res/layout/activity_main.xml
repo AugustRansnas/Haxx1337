@@ -1,39 +1,53 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <RelativeLayout
 
-    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/lId"
-        android:weightSum="6">
+        android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etSearchBox"
-        android:layout_weight="5"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSearch"
-        android:layout_weight="1"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/lId"
+            android:weightSum="6">
 
-    </LinearLayout>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/etSearchBox"
+                android:layout_weight="5" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnSearch"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_above="@+id/lId" />
+
+    </RelativeLayout>
+
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_above="@+id/lId"/>
-
-
-
-
-</RelativeLayout>
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:background="@android:color/holo_orange_dark"
+        android:dividerHeight="0dp"/>
+</android.support.v4.widget.DrawerLayout>
