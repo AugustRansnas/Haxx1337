@@ -20,8 +20,8 @@ public  class JSONparser {
 
 
         try {
-            l.setLatitude(json.getString("lat"));
-            l.setLongitude(json.getString("lon"));
+            l.setLatitude(Double.valueOf(json.getString("lat")));
+            l.setLongitude(Double.valueOf(json.getString("lon")));
             l.setReferenceTime(json.getString("referenceTime"));
             l.setTimeSeries(setWeatherData(json));
         } catch (JSONException e) {

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import testing.august.com.haxx.Database.WeatherDataSource;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
@@ -72,14 +75,18 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private CharSequence mTitle;
     private DrawerLayout drawerLayout;
     private ListView drawerLayoutListView;
+    private WeatherDataSource dataSource;
+    private double clickedLongitude;
+    private double clickedLatitude;
     //Demo-purpose list items
-    private String[] demoListItems = {"List item 1", "List item 2", "List item 3", "List item 4", "List item 5",};
+    private ArrayList<String>demoListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        demoListItems = new ArrayList<String>();
+        dataSource = new WeatherDataSource(this);
         mTitle = mDrawerTitle = getTitle();
 
         searchBox = (EditText) findViewById(R.id.etSearchBox);
@@ -185,6 +192,8 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
     @Override
     public void geoCoderCallback(double[] latlnglist, String address) {
+        clickedLongitude = latlnglist[0];
+        clickedLatitude = latlnglist[1];
         GoogleMap map = mapFragment.getMap();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latlnglist[1], latlnglist[0]), 16));
@@ -387,6 +396,23 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.addToFavorites:
+                    long result = -1;
+                    try {
+                        dataSource.open();
+                        result = dataSource.createLocation(clickedLatitude, clickedLongitude);
+                        dataSource.close();
+                    } catch (SQLiteException e) {
+                        e.printStackTrace();
+                    }
+                    if(result== -1){
+                        System.out.println("create location ERROR");
+                    }else{
+                        System.out.println("create location SUCCESS");
+                        demoListItems.add(String.valueOf(clickedLatitude));
+
+                        ((ArrayAdapter)drawerLayoutListView.getAdapter()).notifyDataSetChanged();
+
+                    }
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
