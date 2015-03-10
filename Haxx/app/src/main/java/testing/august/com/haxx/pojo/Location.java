@@ -12,6 +12,16 @@ public class Location {
     private int id;
     private double latitude;
     private double longitude;
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    private String locationName;
     private String referenceTime;
     private ArrayList<TimeSeries> timeSeries;
 

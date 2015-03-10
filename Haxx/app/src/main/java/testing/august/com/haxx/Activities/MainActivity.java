@@ -1,4 +1,4 @@
-package testing.august.com.haxx;
+package testing.august.com.haxx.Activities;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,10 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -45,7 +43,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import testing.august.com.haxx.Adapters.LocationAdapter;
 import testing.august.com.haxx.Database.WeatherDataSource;
+import testing.august.com.haxx.HelpClasses.DownloadWeather;
+import testing.august.com.haxx.HelpClasses.HaxxGeoCoder;
+import testing.august.com.haxx.HelpClasses.JSONparser;
+import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
@@ -78,14 +81,23 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private WeatherDataSource dataSource;
     private double clickedLongitude;
     private double clickedLatitude;
-    //Demo-purpose list items
-    private ArrayList<String>demoListItems;
+    private String locationName;
+    private ArrayList<Location> locationList;
+    private LocationAdapter locationAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        demoListItems = new ArrayList<String>();
+        setUpComponents(savedInstanceState);
+        loadLocationsFromDb();
+    }
+
+
+    private void setUpComponents(Bundle savedInstanceState) {
+
+        locationList = new ArrayList<Location>();
         dataSource = new WeatherDataSource(this);
         mTitle = mDrawerTitle = getTitle();
 
@@ -95,7 +107,8 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayoutListView = (ListView) findViewById(R.id.left_drawer);
         search.setOnClickListener(this);
-        drawerLayoutListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, demoListItems));
+        locationAdapter = new LocationAdapter(this, locationList);
+        drawerLayoutListView.setAdapter(locationAdapter);
         drawerLayoutListView.setOnItemClickListener(this);
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
@@ -131,6 +144,27 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         mResolvingError = savedInstanceState != null
                 && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
     }
+
+    private void loadLocationsFromDb() {
+
+
+        try {
+            dataSource.open();
+            locationList = dataSource.getAllLocations();
+            dataSource.close();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
+        refreshLocationAdapter();
+
+    }
+
+    private void refreshLocationAdapter() {
+
+        locationAdapter.clear();
+        locationAdapter.addAll(locationList);
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -184,16 +218,25 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, "Show weather for item " + position, Toast.LENGTH_SHORT).show();
+
         drawerLayoutListView.setItemChecked(position, true);
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
+
+        Location clickedLocation = locationList.get(position);
+
+        Intent i = new Intent(this,ShowWeatherActivity.class);
+        i.putExtra("locationName",clickedLocation.getLocationName());
+        i.putExtra("longitude",clickedLocation.getLongitude());
+        i.putExtra("latitude",clickedLocation.getLatitude());
+        startActivity(i);
     }
 
     @Override
     public void geoCoderCallback(double[] latlnglist, String address) {
         clickedLongitude = latlnglist[0];
         clickedLatitude = latlnglist[1];
+        this.locationName = address;
         GoogleMap map = mapFragment.getMap();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latlnglist[1], latlnglist[0]), 16));
@@ -392,25 +435,34 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.showWeather:
+                    Intent i = new Intent(getApplicationContext(),ShowWeatherActivity.class);
 
+                    i.putExtra("locationName",locationName);
+                    i.putExtra("longitude",clickedLongitude);
+                    i.putExtra("latitude",clickedLatitude);
+                    startActivity(i);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.addToFavorites:
                     long result = -1;
                     try {
                         dataSource.open();
-                        result = dataSource.createLocation(clickedLatitude, clickedLongitude);
+                        result = dataSource.createLocation(clickedLatitude, clickedLongitude, locationName);
                         dataSource.close();
                     } catch (SQLiteException e) {
                         e.printStackTrace();
                     }
-                    if(result== -1){
+                    if (result == -1) {
                         System.out.println("create location ERROR");
-                    }else{
+                    } else {
                         System.out.println("create location SUCCESS");
-                        demoListItems.add(String.valueOf(clickedLatitude));
+                        Location l = new Location();
+                        l.setId((int) result);
+                        l.setLocationName(locationName);
 
-                        ((ArrayAdapter)drawerLayoutListView.getAdapter()).notifyDataSetChanged();
+                        locationList.add(l);
+                        refreshLocationAdapter();
+
 
                     }
 

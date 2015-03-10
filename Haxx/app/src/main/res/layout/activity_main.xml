@@ -23,13 +23,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/etSearchBox"
-                android:layout_weight="5" />
+                android:layout_weight="5"
+                android:hint="@string/enter_location"/>
 
             <Button
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/btnSearch"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="@string/Go_to_location"/>
 
         </LinearLayout>
 

@@ -15,6 +15,7 @@ public class WeatherDbHelper  extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_LONGITUDE = "longitude";
     public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_LOCATION_NAME = "locationname";
 
     private static final String DATABASE_NAME = "locations.db";
     private static final int DATABASE_VERSION = 1;
@@ -22,7 +23,8 @@ public class WeatherDbHelper  extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE = "create table " + LOCATIONS_TABLE_NAME
             + " (" + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_LONGITUDE + " double not null, "
-            + COLUMN_LATITUDE + " double not null);";
+            + COLUMN_LATITUDE + " double not null, "
+            + COLUMN_LOCATION_NAME + " text not null);";
 
     public WeatherDbHelper(Context context) { super(context,DATABASE_NAME, null,DATABASE_VERSION);}
 

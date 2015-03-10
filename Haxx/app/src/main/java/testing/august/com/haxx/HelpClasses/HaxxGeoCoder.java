@@ -1,4 +1,4 @@
-package testing.august.com.haxx;
+package testing.august.com.haxx.HelpClasses;
 
 import android.os.AsyncTask;
 import android.util.Log;

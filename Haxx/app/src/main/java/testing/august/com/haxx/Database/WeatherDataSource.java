@@ -33,11 +33,12 @@ public class WeatherDataSource{
         dbHelper.close();
     }
 
-    public long createLocation(double latitude, double longitude){
+    public long createLocation(double latitude, double longitude,String locationName){
 
         ContentValues values = new ContentValues();
         values.put(WeatherDbHelper.COLUMN_LONGITUDE,longitude);
         values.put(WeatherDbHelper.COLUMN_LATITUDE,latitude);
+        values.put(WeatherDbHelper.COLUMN_LOCATION_NAME,locationName);
         return database.insert(WeatherDbHelper.LOCATIONS_TABLE_NAME, null, values);
 
     }
@@ -62,6 +63,7 @@ public class WeatherDataSource{
             location.setId(cursor.getInt(0));
             location.setLongitude(cursor.getDouble(1));
             location.setLatitude(cursor.getDouble(2));
+            location.setLocationName(cursor.getString(3));
             allLocations.add(location);
             cursor.moveToNext();
         }
