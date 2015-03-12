@@ -1,9 +1,12 @@
 package testing.august.com.haxx.pojo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Benny on 2015-02-16.
  */
-public class TimeSeries {
+public class TimeSeries implements Parcelable {
 
     private String time;
     private String airTemperature;
@@ -21,6 +24,8 @@ public class TimeSeries {
     private String precipitationSnow;
     private String precipitationForm;
 
+    public TimeSeries() {
+    }
 
     public String getTime() {
         return time;
@@ -140,6 +145,61 @@ public class TimeSeries {
 
     public void setPrecipitationForm(String precipitationForm) {
         this.precipitationForm = precipitationForm;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.time);
+        dest.writeString(this.airTemperature);
+        dest.writeString(this.visibility);
+        dest.writeString(this.windDirection);
+        dest.writeString(this.windSpeed);
+        dest.writeString(this.relativeHumidity);
+        dest.writeString(this.probabilityForThunder);
+        dest.writeString(this.totalAmountOfCloud);
+        dest.writeString(this.amountOfCloudLow);
+        dest.writeString(this.amountOfCloudMedium);
+        dest.writeString(this.amountOfCloudHigh);
+        dest.writeString(this.windGusts);
+        dest.writeString(this.precipitationTotal);
+        dest.writeString(this.precipitationSnow);
+        dest.writeString(this.precipitationForm);
+    }
+
+    private TimeSeries(Parcel in) {
+        this.time = in.readString();
+        this.airTemperature = in.readString();
+        this.visibility = in.readString();
+        this.windDirection = in.readString();
+        this.windSpeed = in.readString();
+        this.relativeHumidity = in.readString();
+        this.probabilityForThunder = in.readString();
+        this.totalAmountOfCloud = in.readString();
+        this.amountOfCloudLow = in.readString();
+        this.amountOfCloudMedium = in.readString();
+        this.amountOfCloudHigh = in.readString();
+        this.windGusts = in.readString();
+        this.precipitationTotal = in.readString();
+        this.precipitationSnow = in.readString();
+        this.precipitationForm = in.readString();
+    }
+
+    public static final Parcelable.Creator<TimeSeries> CREATOR
+            = new Parcelable.Creator<TimeSeries>() {
+        @Override
+        public TimeSeries createFromParcel(Parcel in) {
+            return new TimeSeries(in);
+        }
+
+        @Override
+        public TimeSeries[] newArray(int size) {
+            return new TimeSeries[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
 }

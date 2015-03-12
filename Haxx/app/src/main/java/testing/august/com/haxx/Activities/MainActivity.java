@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,14 +24,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -42,12 +38,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
 
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 
 import testing.august.com.haxx.Adapters.LocationAdapter;
@@ -230,32 +226,44 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
 
-        Location l = (Location)drawerLayoutListView.getItemAtPosition(position);
-        LatLng coordinates = new LatLng(l.getLatitude(),l.getLongitude());
+        Location l = (Location) drawerLayoutListView.getItemAtPosition(position);
+        LatLng coordinates = new LatLng(l.getLatitude(), l.getLongitude());
 
         GoogleMap map = mapFragment.getMap();
         float zoom = map.getCameraPosition().zoom;
 
         CameraPosition cameraPosition = new CameraPosition.Builder().target(coordinates).zoom(zoom).build();
 
-        mapFragment.getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),5000,null);
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 5000, null);
 
-        final String myClickedLocation = l.getLocationName();
-        final double myClickedLongitude = l.getLongitude();
-        final double myCLickedLatitude = l.getLatitude();
+        TimeSeries ts = new TimeSeries();
+        ts.setAirTemperature("20");
+        ts.setTime("19:00");
+        TimeSeries ts2 = new TimeSeries();
+        ts2.setAirTemperature("20");
+        ts2.setTime("20:00");
+        TimeSeries ts3 = new TimeSeries();
+        ts3.setAirTemperature("20");
+        ts3.setTime("21:00");
+
+        ArrayList<TimeSeries> timeSeries = new ArrayList<>();
+        timeSeries.add(ts);
+        timeSeries.add(ts2);
+        timeSeries.add(ts3);
+
+        l.setTimeSeries(timeSeries);
+
+        final Location loc = l;
         final Context myContext = getApplicationContext();
 
         final Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
 
             @Override
             public void run() {
                 // Do something after 5s = 5000ms
-                Intent i = new Intent(myContext,ShowWeatherActivity.class);
-                i.putExtra("locationName",myClickedLocation);
-                i.putExtra("longitude",myClickedLongitude);
-                i.putExtra("latitude",myCLickedLatitude);
+                Intent i = new Intent(myContext, ShowWeatherActivity.class);
+                i.putExtra("location", loc);
                 startActivity(i);
             }
         }, 6000);
@@ -466,11 +474,11 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.showWeather:
-                    Intent i = new Intent(getApplicationContext(),ShowWeatherActivity.class);
+                    Intent i = new Intent(getApplicationContext(), ShowWeatherActivity.class);
 
-                    i.putExtra("locationName",locationName);
-                    i.putExtra("longitude",clickedLongitude);
-                    i.putExtra("latitude",clickedLatitude);
+                    i.putExtra("locationName", locationName);
+                    i.putExtra("longitude", clickedLongitude);
+                    i.putExtra("latitude", clickedLatitude);
                     startActivity(i);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
@@ -493,7 +501,6 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
                         locationList.add(l);
                         refreshLocationAdapter();
-
 
                     }
 
