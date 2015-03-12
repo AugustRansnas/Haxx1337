@@ -1,13 +1,16 @@
 package testing.august.com.haxx.Activities;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
@@ -25,17 +28,21 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 
 import org.json.JSONObject;
 
@@ -223,13 +230,37 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
 
-        Location clickedLocation = locationList.get(position);
+        Location l = (Location)drawerLayoutListView.getItemAtPosition(position);
+        LatLng coordinates = new LatLng(l.getLatitude(),l.getLongitude());
 
-        Intent i = new Intent(this,ShowWeatherActivity.class);
-        i.putExtra("locationName",clickedLocation.getLocationName());
-        i.putExtra("longitude",clickedLocation.getLongitude());
-        i.putExtra("latitude",clickedLocation.getLatitude());
-        startActivity(i);
+        GoogleMap map = mapFragment.getMap();
+        float zoom = map.getCameraPosition().zoom;
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(coordinates).zoom(zoom).build();
+
+        mapFragment.getMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),5000,null);
+
+        final String myClickedLocation = l.getLocationName();
+        final double myClickedLongitude = l.getLongitude();
+        final double myCLickedLatitude = l.getLatitude();
+        final Context myContext = getApplicationContext();
+
+        final Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                // Do something after 5s = 5000ms
+                Intent i = new Intent(myContext,ShowWeatherActivity.class);
+                i.putExtra("locationName",myClickedLocation);
+                i.putExtra("longitude",myClickedLongitude);
+                i.putExtra("latitude",myCLickedLatitude);
+                startActivity(i);
+            }
+        }, 6000);
+
+
     }
 
     @Override
