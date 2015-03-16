@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -24,8 +25,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -44,7 +47,10 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import testing.august.com.haxx.Adapters.LocationAdapter;
 import testing.august.com.haxx.Database.WeatherDataSource;
@@ -87,6 +93,10 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private String locationName;
     private ArrayList<Location> locationList;
     private LocationAdapter locationAdapter;
+    private static final int MAP_ANIMATION_TIME = 3000;
+    private long mapAnimationStartTime;
+    private boolean isWeatherDownloadReady = false;
+    private ProgressBar bar;
 
 
     @Override
@@ -113,6 +123,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         locationAdapter = new LocationAdapter(this, locationList);
         drawerLayoutListView.setAdapter(locationAdapter);
         drawerLayoutListView.setOnItemClickListener(this);
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             /** Called when a drawer has settled in a completely closed state. */
@@ -194,11 +205,14 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
-    protected void initiate() {
+    protected void getWeatherFromCoordinates(double longitude,double latitude) {
 
+
+        DecimalFormat df = new DecimalFormat("####0.00");
+        System.out.println("Value: " + df.format(longitude).replace(",","."));
         try {
             //url = nedladdningslänk
-            URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/58.59/lon/16.18/data.json");
+            URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/" + df.format(latitude).replace(",",".") +"/lon/" + df.format(longitude).replace(",",".") + "/data.json");
             new DownloadWeatherDataTask().execute(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -222,53 +236,37 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        isWeatherDownloadReady = false;
         drawerLayoutListView.setItemChecked(position, true);
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
 
         Location l = (Location) drawerLayoutListView.getItemAtPosition(position);
+        this.locationName = l.getLocationName();
         LatLng coordinates = new LatLng(l.getLatitude(), l.getLongitude());
+
+        this.getWeatherFromCoordinates(l.getLongitude(),l.getLatitude());
 
         GoogleMap map = mapFragment.getMap();
         float zoom = map.getCameraPosition().zoom;
 
         CameraPosition cameraPosition = new CameraPosition.Builder().target(coordinates).zoom(zoom).build();
+        mapAnimationStartTime = Calendar.getInstance().getTimeInMillis();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), MAP_ANIMATION_TIME, null);
 
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 5000, null);
+        new CountDownTimer(MAP_ANIMATION_TIME, 1000) {
 
-        TimeSeries ts = new TimeSeries();
-        ts.setAirTemperature("20");
-        ts.setTime("19:00");
-        TimeSeries ts2 = new TimeSeries();
-        ts2.setAirTemperature("20");
-        ts2.setTime("20:00");
-        TimeSeries ts3 = new TimeSeries();
-        ts3.setAirTemperature("20");
-        ts3.setTime("21:00");
+            public void onTick(long millisUntilFinished) {
 
-        ArrayList<TimeSeries> timeSeries = new ArrayList<>();
-        timeSeries.add(ts);
-        timeSeries.add(ts2);
-        timeSeries.add(ts3);
-
-        l.setTimeSeries(timeSeries);
-
-        final Location loc = l;
-        final Context myContext = getApplicationContext();
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                // Do something after 5s = 5000ms
-                Intent i = new Intent(myContext, ShowWeatherActivity.class);
-                i.putExtra("location", loc);
-                startActivity(i);
             }
-        }, 6000);
 
+            public void onFinish() {
+                if(!isWeatherDownloadReady){
 
+                    bar.setVisibility(View.VISIBLE);
+            }
+            }
+        }.start();
     }
 
     @Override
@@ -498,6 +496,8 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                         Location l = new Location();
                         l.setId((int) result);
                         l.setLocationName(locationName);
+                        l.setLatitude(clickedLatitude);
+                        l.setLongitude(clickedLongitude);
 
                         locationList.add(l);
                         refreshLocationAdapter();
@@ -518,40 +518,27 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         }
     };
 
-    private class DownloadWeatherDataTask extends AsyncTask<URL, Integer, Long> {
+    private class DownloadWeatherDataTask extends AsyncTask<URL, Integer, Location> {
 
         //Tunga arbetet här
         @Override
-        protected Long doInBackground(URL... urls) {
+        protected Location doInBackground(URL... urls) {
+
+             Location location = null;
 
             //Starta JSON nedladding + parse
             for (URL url : urls) {
+                System.out.println(url);
                 JSONObject json = DownloadWeather.downloadWeather(url);
-                Location location = JSONparser.parseJSONobject(json);
 
-                System.out.println("START!!!!!!!!!!!");
-                System.out.println(location.getLatitude());
-                System.out.println(location.getLongitude());
-                System.out.println(location.getReferenceTime());
+                location = JSONparser.parseJSONobject(json);
 
-                ArrayList<TimeSeries> a = location.getTimeSeries();
 
-                for (TimeSeries t : a) {
-                    System.out.println("TIMESERIES*****************************************");
-                    System.out.println(t.getAirTemperature());
-                    System.out.println(t.getAmountOfCloudHigh());
-                    System.out.println(t.getAmountOfCloudLow());
-                    System.out.println(t.getTime());
-                    System.out.println(t.getPrecipitationSnow());
-
-                }
-
-                System.out.println("END!!!!!!!!!!!");
             }
 
             //Används för att uppdatera progress
             publishProgress();
-            return null;
+            return location;
         }
 
         //Uppdatera progress
@@ -562,8 +549,49 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
         //Efter tråden är färdig
         @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
+        protected void onPostExecute(Location location) {
+            super.onPostExecute(location);
+
+            bar.setVisibility(View.GONE);
+
+            if(location !=null) {
+                isWeatherDownloadReady = true;
+                long timeDifference = MAP_ANIMATION_TIME + mapAnimationStartTime - Calendar.getInstance().getTimeInMillis();
+                location.setLocationName(locationName);
+                final Location myLocation = location;
+
+                if (timeDifference <= 0) {
+
+                    System.out.println("starta intent" + timeDifference);
+
+                    final Context myContext = getApplicationContext();
+                    Intent i = new Intent(myContext, ShowWeatherActivity.class);
+
+                    i.putExtra("location", myLocation);
+                    startActivity(i);
+
+                } else {
+                    System.out.println("starta inte intent änmnu" + timeDifference);
+
+                    new CountDownTimer(timeDifference + 500, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+                            final Context myContext = getApplicationContext();
+                            Intent i = new Intent(myContext, ShowWeatherActivity.class);
+
+                            i.putExtra("location", myLocation);
+                            startActivity(i);
+                        }
+                    }.start();
+
+                }
+            }else{
+                System.out.println("Location är null");
+            }
+
         }
     }
 }

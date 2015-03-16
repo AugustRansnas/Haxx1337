@@ -41,7 +41,15 @@
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_above="@+id/lId" />
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone">
+        </ProgressBar>
     </RelativeLayout>
 
     <ListView android:id="@+id/left_drawer"
@@ -53,3 +61,4 @@
         android:background="@android:color/holo_orange_dark"
         android:dividerHeight="0dp"/>
 </android.support.v4.widget.DrawerLayout>
+
