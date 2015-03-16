@@ -224,8 +224,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         switch (v.getId()) {
 
             case R.id.btnSearch:
-                String ourAddress;
-                ourAddress = searchBox.getText().toString();
+                String ourAddress = searchBox.getText().toString();
                 HaxxGeoCoder geoCoder = new HaxxGeoCoder();
                 geoCoder.setCallback(this);
                 geoCoder.getLatLongFromAddress(ourAddress);
@@ -276,13 +275,13 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         this.locationName = address;
         GoogleMap map = mapFragment.getMap();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(latlnglist[1], latlnglist[0]), 16));
+                new LatLng(clickedLatitude, clickedLongitude), 16));
 
         // You can customize the marker image using images bundled with
         // your app, or dynamically generated bitmaps.
         map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
-                .position(new LatLng(latlnglist[1], latlnglist[0])));
+                .position(new LatLng(clickedLatitude, clickedLongitude)));
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
