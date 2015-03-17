@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
@@ -54,6 +55,7 @@ import java.util.Date;
 
 import testing.august.com.haxx.Adapters.LocationAdapter;
 import testing.august.com.haxx.Database.WeatherDataSource;
+import testing.august.com.haxx.HelpClasses.CoordinateBoundsHelper;
 import testing.august.com.haxx.HelpClasses.DownloadWeather;
 import testing.august.com.haxx.HelpClasses.HaxxGeoCoder;
 import testing.august.com.haxx.HelpClasses.JSONparser;
@@ -272,31 +274,35 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     public void geoCoderCallback(double[] latlnglist, String address) {
         clickedLongitude = latlnglist[0];
         clickedLatitude = latlnglist[1];
-        this.locationName = address;
-        GoogleMap map = mapFragment.getMap();
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(clickedLatitude, clickedLongitude), 16));
+        if(CoordinateBoundsHelper.isCoordinatesWithinBounds(clickedLongitude, clickedLatitude)){
+            this.locationName = address;
+            GoogleMap map = mapFragment.getMap();
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(clickedLatitude, clickedLongitude), 16));
 
-        // You can customize the marker image using images bundled with
-        // your app, or dynamically generated bitmaps.
-        map.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
-                .position(new LatLng(clickedLatitude, clickedLongitude)));
+            // You can customize the marker image using images bundled with
+            // your app, or dynamically generated bitmaps.
+            map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
+                    .position(new LatLng(clickedLatitude, clickedLongitude)));
 
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                LatLng latlng = marker.getPosition();
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    LatLng latlng = marker.getPosition();
 
-                if (mActionMode != null) {
+                    if (mActionMode != null) {
+                        return false;
+                    }
+
+                    // Start the CAB using the ActionMode.Callback defined above
+                    mActionMode = startSupportActionMode(mActionModeCallback);
                     return false;
                 }
-
-                // Start the CAB using the ActionMode.Callback defined above
-                mActionMode = startSupportActionMode(mActionModeCallback);
-                return false;
-            }
-        });
+            });
+        }else{
+            Toast.makeText(this, getResources().getString(R.string.coordinates_out_of_bounds_error_msg), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /* A fragment to display an error dialog */

@@ -13,7 +13,7 @@
     <string name="Go_to_location">Sök</string>
     <string name="enter_location">Ange Plats</string>
 
-
+    <string name="coordinates_out_of_bounds_error_msg">Platsen är inte inom den tillåtna gränsen.</string>
 
 
 </resources>
