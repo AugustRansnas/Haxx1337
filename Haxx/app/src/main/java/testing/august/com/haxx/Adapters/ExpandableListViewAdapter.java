@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import testing.august.com.haxx.HelpClasses.TemperatureHelper;
+import testing.august.com.haxx.HelpClasses.TimeHelper;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
@@ -22,10 +24,12 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private ArrayList<TimeSeries> timeseries;
+    private Location location;
 
     public ExpandableListViewAdapter(Context context, Location location){
         this.context = context;
         this.timeseries = location.getTimeSeries();
+        this.location = location;
     }
     @Override
     public int getGroupCount() {
@@ -74,8 +78,26 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             row = convertView;
         }
 
-        TextView lblHeader = (TextView)row.findViewById(R.id.lblListHeader);
-        lblHeader.setText(timeseries.get(groupPosition).getTime());
+        TimeSeries timeSeries = timeseries.get(groupPosition);
+
+        TextView lblDay = (TextView)row.findViewById(R.id.lblDay);
+        TextView lblTempHigh = (TextView)row.findViewById(R.id.lblTempHigh);
+        TextView lblTempLow = (TextView)row.findViewById(R.id.lblTempLow);
+        TextView lblDate = (TextView)row.findViewById(R.id.lblDate);
+
+        lblDate.setText(timeseries.get(groupPosition).getTime());
+
+
+        String day = TimeHelper.getDay(timeSeries.getTime());
+        lblDay.setText(day);
+        String date = TimeHelper.getDate(timeSeries.getTime());
+        lblDate.setText(date);
+
+        HashMap<String,String> highestLowestTemp= TemperatureHelper.getHighestLowestTemperature(location,timeSeries.getTime());
+
+        lblTempHigh.setText(highestLowestTemp.get("highest"));
+        lblTempLow.setText(highestLowestTemp.get("lowest"));
+
         return row;
     }
 
