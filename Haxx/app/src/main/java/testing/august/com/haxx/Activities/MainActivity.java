@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
@@ -29,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -47,11 +45,9 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import testing.august.com.haxx.Adapters.LocationAdapter;
 import testing.august.com.haxx.Database.WeatherDataSource;
@@ -61,12 +57,11 @@ import testing.august.com.haxx.HelpClasses.HaxxGeoCoder;
 import testing.august.com.haxx.HelpClasses.JSONparser;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
-import testing.august.com.haxx.pojo.TimeSeries;
 
 
 public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoCoderCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener {
+        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -99,6 +94,10 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private long mapAnimationStartTime;
     private boolean isWeatherDownloadReady = false;
     private ProgressBar bar;
+
+
+    //Bara för test
+    private static Toast toast;
 
 
     @Override
@@ -207,14 +206,14 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
-    protected void getWeatherFromCoordinates(double longitude,double latitude) {
+    protected void getWeatherFromCoordinates(double longitude, double latitude) {
 
 
         DecimalFormat df = new DecimalFormat("####0.00");
-        System.out.println("Value: " + df.format(longitude).replace(",","."));
+        System.out.println("Value: " + df.format(longitude).replace(",", "."));
         try {
             //url = nedladdningslänk
-            URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/" + df.format(latitude).replace(",",".") +"/lon/" + df.format(longitude).replace(",",".") + "/data.json");
+            URL url = new URL("http://opendata-download-metfcst.smhi.se/api/category/pmp1.5g/version/1/geopoint/lat/" + df.format(latitude).replace(",", ".") + "/lon/" + df.format(longitude).replace(",", ".") + "/data.json");
             new DownloadWeatherDataTask().execute(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -246,7 +245,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         this.locationName = l.getLocationName();
         LatLng coordinates = new LatLng(l.getLatitude(), l.getLongitude());
 
-        this.getWeatherFromCoordinates(l.getLongitude(),l.getLatitude());
+        this.getWeatherFromCoordinates(l.getLongitude(), l.getLatitude());
 
         GoogleMap map = mapFragment.getMap();
         float zoom = map.getCameraPosition().zoom;
@@ -262,10 +261,10 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
             }
 
             public void onFinish() {
-                if(!isWeatherDownloadReady){
+                if (!isWeatherDownloadReady) {
 
                     bar.setVisibility(View.VISIBLE);
-            }
+                }
             }
         }.start();
     }
@@ -274,7 +273,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     public void geoCoderCallback(double[] latlnglist, String address) {
         clickedLongitude = latlnglist[0];
         clickedLatitude = latlnglist[1];
-        if(CoordinateBoundsHelper.isCoordinatesWithinBounds(clickedLongitude, clickedLatitude)){
+        if (CoordinateBoundsHelper.isCoordinatesWithinBounds(clickedLongitude, clickedLatitude)) {
             this.locationName = address;
             GoogleMap map = mapFragment.getMap();
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -300,7 +299,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                     return false;
                 }
             });
-        }else{
+        } else {
             Toast.makeText(this, getResources().getString(R.string.coordinates_out_of_bounds_error_msg), Toast.LENGTH_SHORT).show();
         }
     }
@@ -452,6 +451,20 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
                 .position(new LatLng(41.889, -87.622)));
+
+        map.setOnCameraChangeListener(this);
+        map.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        LatLng position = cameraPosition.target;
+        boolean isWithinBounds = CoordinateBoundsHelper.isCoordinatesWithinBounds(position.longitude, position.latitude);
+        if(toast != null){
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, "Is within bounds: " + isWithinBounds, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -529,7 +542,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         @Override
         protected Location doInBackground(URL... urls) {
 
-             Location location = null;
+            Location location = null;
 
             //Starta JSON nedladding + parse
             for (URL url : urls) {
@@ -559,7 +572,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
             bar.setVisibility(View.GONE);
 
-            if(location !=null) {
+            if (location != null) {
                 isWeatherDownloadReady = true;
                 long timeDifference = MAP_ANIMATION_TIME + mapAnimationStartTime - Calendar.getInstance().getTimeInMillis();
                 location.setLocationName(locationName);
@@ -593,7 +606,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                     }.start();
 
                 }
-            }else{
+            } else {
                 System.out.println("Location är null");
             }
 
