@@ -1,56 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:weightSum="5"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="#000000">
 
     <!-- Dag, tid, grader  -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <TextView
-        android:id="@+id/lblDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17dp"
-        android:text="Dag"
-        android:paddingLeft="10dp"
-        android:textColor="#f9f93d"/>
-
-    <TextView
-        android:id="@+id/lblTempHigh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17dp"
-        android:text="Hög"
-        android:paddingLeft="70dp"
-        android:textColor="#f9f93d" />
-    <TextView
-        android:id="@+id/lblTempLow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17dp"
-        android:text="Låg"
-        android:paddingLeft="70dp"
-        android:textColor="#f9f93d" />
-   </LinearLayout>
     <LinearLayout
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="7dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
+            android:layout_weight="1"
+            android:id="@+id/lblDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:text="Dag"
+            android:textColor="#f9f93d" />
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/lblTempHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:text="Hög"
+            android:textColor="#f9f93d" />
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/lblTempLow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:text="Låg"
+            android:textColor="#f9f93d" />
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/lblPrecipitation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:text="Ndbrd"
+            android:textColor="#f9f93d" />
+
+        <ImageView
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginBottom="7dp"
+        android:weightSum="5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
             android:id="@+id/lblDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17dp"
+            android:textSize="12sp"
             android:text="Datum"
-            android:paddingLeft="10dp"
             android:textColor="#f9f93d" />
 
 
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
