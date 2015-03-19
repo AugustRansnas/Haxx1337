@@ -84,9 +84,13 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView lblTempHigh = (TextView)row.findViewById(R.id.lblTempHigh);
         TextView lblTempLow = (TextView)row.findViewById(R.id.lblTempLow);
         TextView lblDate = (TextView)row.findViewById(R.id.lblDate);
+        TextView lblPrecipitation = (TextView)row.findViewById(R.id.lblPrecipitation);
 
         lblDate.setText(timeseries.get(groupPosition).getTime());
 
+        String precipitation = timeSeries.getPrecipitationTotal();
+
+        lblPrecipitation.setText(precipitation);
 
         String day = TimeHelper.getDay(timeSeries.getTime());
         lblDay.setText(day);
@@ -97,6 +101,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
         lblTempHigh.setText(highestLowestTemp.get("highest"));
         lblTempLow.setText(highestLowestTemp.get("lowest"));
+
 
         return row;
     }
@@ -113,8 +118,31 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             row = convertView;
         }
 
-        TextView lblHeader = (TextView)row.findViewById(R.id.lblListItem);
-        lblHeader.setText(timeseries.get(groupPosition).getAirTemperature());
+        TextView temp = (TextView)row.findViewById(R.id.lblTemp);
+        TextView windSpeed = (TextView)row.findViewById(R.id.lblWindSpeed);
+        TextView windDirection = (TextView)row.findViewById(R.id.lblWindDirection);
+        TextView windGusts = (TextView)row.findViewById(R.id.lblWindGusts);
+        TextView visibility = (TextView)row.findViewById(R.id.lblVisibility);
+        TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
+        TextView humidity = (TextView)row.findViewById(R.id.lblHumidity);
+        TextView thunder = (TextView)row.findViewById(R.id.lblProbabilityOfThunder);
+        TextView snow = (TextView)row.findViewById(R.id.lblSnow);
+        TextView form = (TextView)row.findViewById(R.id.lblForm);
+
+        TimeSeries timeSeries = timeseries.get(groupPosition);
+
+        temp.setText(timeSeries.getAirTemperature());
+
+        windSpeed.setText(timeSeries.getWindSpeed());
+        windDirection.setText(timeSeries.getWindDirection());
+        windGusts.setText(timeSeries.getWindGusts());
+        visibility.setText(timeSeries.getVisibility());
+        totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
+        humidity.setText(timeSeries.getRelativeHumidity());
+        thunder.setText(timeSeries.getProbabilityForThunder());
+        snow.setText(timeSeries.getPrecipitationSnow());
+        form.setText(timeSeries.getPrecipitationForm());
+
         return row;
     }
 

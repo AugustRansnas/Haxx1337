@@ -6,11 +6,13 @@
     android:orientation="vertical"
     android:background="#000000">
 
+
+
     <!-- Dag, tid, grader  -->
     <LinearLayout
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="3dp"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +21,7 @@
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblDay"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:text="Dag"
@@ -28,7 +30,7 @@
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblTempHigh"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:text="Hög"
@@ -37,7 +39,7 @@
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblTempLow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:text="Låg"
@@ -46,7 +48,7 @@
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblPrecipitation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:text="Ndbrd"
@@ -55,7 +57,7 @@
         <ImageView
             android:layout_weight="1"
             android:src="@drawable/ic_launcher"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
@@ -71,12 +73,11 @@
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblDate"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="Datum"
             android:textColor="#f9f93d" />
-
 
     </LinearLayout>
 

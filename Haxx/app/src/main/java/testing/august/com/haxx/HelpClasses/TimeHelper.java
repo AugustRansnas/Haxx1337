@@ -57,7 +57,8 @@ public class TimeHelper {
 
     public static String getDate(String date) {
         String formatedDate = date.substring(0, 10);
-        return formatedDate;
+        String formatTime = date.substring(11,16);
+        return formatedDate + " " + formatTime;
     }
 
 }
