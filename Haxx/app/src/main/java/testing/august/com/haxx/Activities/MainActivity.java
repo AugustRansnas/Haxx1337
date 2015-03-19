@@ -98,6 +98,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
     //Bara för test
     private static Toast toast;
+    private LatLng previousLocation;
 
 
     @Override
@@ -444,13 +445,13 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     @Override
     public void onMapReady(GoogleMap map) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(41.889, -87.622), 16));
+                new LatLng(55.889, 13.622), 16));
 
         // You can customize the marker image using images bundled with
         // your app, or dynamically generated bitmaps.
         map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
-                .position(new LatLng(41.889, -87.622)));
+                .position(new LatLng(55.889, 13.622)));
 
         map.setOnCameraChangeListener(this);
         map.getUiSettings().setZoomControlsEnabled(true);
@@ -459,12 +460,21 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         LatLng position = cameraPosition.target;
-        boolean isWithinBounds = CoordinateBoundsHelper.isCoordinatesWithinBounds(position.longitude, position.latitude);
-        if(toast != null){
-            toast.cancel();
+        double longitude = position.longitude;
+        double latitude = position.latitude;
+
+        if(!CoordinateBoundsHelper.isCoordinatesWithinBounds(longitude, latitude)){
+            if(mapFragment != null){
+                GoogleMap map = mapFragment.getMap();
+                LatLng coordinates = new LatLng(previousLocation.latitude, previousLocation.longitude);
+                float zoom = map.getCameraPosition().zoom;
+                CameraPosition oldCameraPosition = new CameraPosition.Builder().target(coordinates).zoom(zoom).build();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(oldCameraPosition), 1000, null);
+            }
+
+        }else{
+            this.previousLocation = new LatLng(position.latitude, position.longitude);
         }
-        toast = Toast.makeText(this, "Is within bounds: " + isWithinBounds, Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {

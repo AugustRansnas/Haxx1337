@@ -10,7 +10,7 @@ public class CoordinateBoundsHelper {
         */
 
     //South latitude limit
-    private static final double ALATS = 52.50;
+    private static final double ALATS = 53.30;
     //North longitude limit
     private static final double ALONW = 2.25;
     //North latitude limit
