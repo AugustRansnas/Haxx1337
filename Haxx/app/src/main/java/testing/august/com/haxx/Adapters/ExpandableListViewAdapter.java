@@ -1,16 +1,19 @@
 package testing.august.com.haxx.Adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import testing.august.com.haxx.HelpClasses.GroupIconHelper;
 import testing.august.com.haxx.HelpClasses.TemperatureHelper;
 import testing.august.com.haxx.HelpClasses.TimeHelper;
 import testing.august.com.haxx.R;
@@ -85,7 +88,9 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView lblTempLow = (TextView)row.findViewById(R.id.lblTempLow);
         TextView lblDate = (TextView)row.findViewById(R.id.lblDate);
         TextView lblPrecipitation = (TextView)row.findViewById(R.id.lblPrecipitation);
+        ImageView weatherIcon = (ImageView) row.findViewById(R.id.iVWeatherIcon);
 
+        weatherIcon.setImageResource(GroupIconHelper.setWeatherIcon(timeSeries));
         lblDate.setText(timeseries.get(groupPosition).getTime());
 
         String precipitation = timeSeries.getPrecipitationTotal();

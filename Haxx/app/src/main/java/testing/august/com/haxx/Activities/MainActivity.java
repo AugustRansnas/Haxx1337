@@ -94,6 +94,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private long mapAnimationStartTime;
     private boolean isWeatherDownloadReady = false;
     private ProgressBar bar;
+    private String ourAddress;
 
 
     //Bara för test
@@ -226,7 +227,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         switch (v.getId()) {
 
             case R.id.btnSearch:
-                String ourAddress = searchBox.getText().toString();
+                ourAddress = searchBox.getText().toString();
                 HaxxGeoCoder geoCoder = new HaxxGeoCoder();
                 geoCoder.setCallback(this);
                 geoCoder.getLatLongFromAddress(ourAddress);
@@ -237,7 +238,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        isWeatherDownloadReady = false;
+
         drawerLayoutListView.setItemChecked(position, true);
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
@@ -500,13 +501,9 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.showWeather:
-                    Intent i = new Intent(getApplicationContext(), ShowWeatherActivity.class);
 
-                    i.putExtra("locationName", locationName);
-                    i.putExtra("longitude", clickedLongitude);
-                    i.putExtra("latitude", clickedLatitude);
-                    startActivity(i);
-                    mode.finish(); // Action picked, so close the CAB
+                   getWeatherFromCoordinates(clickedLongitude,clickedLatitude);
+
                     return true;
                 case R.id.addToFavorites:
                     long result = -1;
@@ -549,6 +546,13 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private class DownloadWeatherDataTask extends AsyncTask<URL, Integer, Location> {
 
         //Tunga arbetet här
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isWeatherDownloadReady = false;
+        }
+
         @Override
         protected Location doInBackground(URL... urls) {
 
