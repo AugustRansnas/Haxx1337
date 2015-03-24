@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -61,7 +62,7 @@ import testing.august.com.haxx.pojo.Location;
 
 public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoCoderCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener {
+        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener , GoogleMap.OnMapLongClickListener,GoogleMap.OnMarkerClickListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -95,6 +96,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private boolean isWeatherDownloadReady = false;
     private ProgressBar bar;
     private String ourAddress;
+    private HaxxGeoCoder geoCoder;
 
 
     //Bara för test
@@ -128,6 +130,9 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         drawerLayoutListView.setOnItemClickListener(this);
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
 
+        geoCoder = new HaxxGeoCoder();
+        geoCoder.setCallback(this);
+
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
@@ -160,6 +165,9 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                 .build();
         mResolvingError = savedInstanceState != null
                 && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+
+        mapFragment.getMap().setOnMapLongClickListener(this);
+        mapFragment.getMap().setOnMarkerClickListener(this);
     }
 
     private void loadLocationsFromDb() {
@@ -227,13 +235,16 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         switch (v.getId()) {
 
             case R.id.btnSearch:
+
                 ourAddress = searchBox.getText().toString();
-                HaxxGeoCoder geoCoder = new HaxxGeoCoder();
-                geoCoder.setCallback(this);
                 geoCoder.getLatLongFromAddress(ourAddress);
+
                 break;
         }
     }
+
+
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -276,8 +287,10 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         clickedLongitude = latlnglist[0];
         clickedLatitude = latlnglist[1];
         if (CoordinateBoundsHelper.isCoordinatesWithinBounds(clickedLongitude, clickedLatitude)) {
+
             this.locationName = address;
             GoogleMap map = mapFragment.getMap();
+            map.clear();
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(clickedLatitude, clickedLongitude), 16));
 
@@ -287,24 +300,42 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
                     .position(new LatLng(clickedLatitude, clickedLongitude)));
 
-            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    LatLng latlng = marker.getPosition();
 
-                    if (mActionMode != null) {
-                        return false;
-                    }
-
-                    // Start the CAB using the ActionMode.Callback defined above
-                    mActionMode = startSupportActionMode(mActionModeCallback);
-                    return false;
-                }
-            });
         } else {
             Toast.makeText(this, getResources().getString(R.string.coordinates_out_of_bounds_error_msg), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        if (mActionMode != null) {
+            return false;
+        }
+        // Start the CAB using the ActionMode.Callback defined above
+        mActionMode = startSupportActionMode(mActionModeCallback);
+        return false;
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+                mapFragment.getMap().clear();
+                mapFragment.getMap().addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
+                .position(latLng));
+
+        String address = HaxxGeoCoder.getAddressFromCoordinates(this,latLng);
+        this.clickedLatitude = latLng.latitude;
+        this.clickedLongitude = latLng.longitude;
+        if(address == null){
+
+            Toast.makeText(this,"Strängen är tom", Toast.LENGTH_SHORT).show();
+
+        }
+        this.locationName = address;
+
+        }
+
 
     /* A fragment to display an error dialog */
     public static class ErrorDialogFragment extends DialogFragment {
@@ -584,9 +615,11 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         protected void onPostExecute(Location location) {
             super.onPostExecute(location);
 
+
+
             bar.setVisibility(View.GONE);
 
-            if (location != null) {
+            if (location != null && locationName!=null) {
                 isWeatherDownloadReady = true;
                 long timeDifference = MAP_ANIMATION_TIME + mapAnimationStartTime - Calendar.getInstance().getTimeInMillis();
                 location.setLocationName(locationName);

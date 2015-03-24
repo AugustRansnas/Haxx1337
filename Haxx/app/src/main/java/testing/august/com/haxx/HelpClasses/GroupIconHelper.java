@@ -25,6 +25,9 @@ public class GroupIconHelper{
                 return R.drawable.suncloudh;
             }else if(weatherForm.equals("3") && clouds.equals("0")&& thunderint <50){
                 return R.drawable.cloudrain;
+            }else if(weatherForm.equals("1") && clouds.equals("0")&& thunderint <50){
+                return R.drawable.cloudsnow;
+
 
                 //cloud
             }else if (weatherForm.equals("0") && cloudint > 4 && thunderint <50){
@@ -37,7 +40,7 @@ public class GroupIconHelper{
                 return R.drawable.cloudsnow;
             }else if(weatherForm.equals("5")||weatherForm.equals("6") && cloudint > 4 && thunderint <50) {
                 return R.drawable.cloudfreezingdrizzle;
-            }else if(weatherForm.equals("4") && cloudint > 4 && thunderint <50){
+            }else if(weatherForm.equals("4") && cloudint > 4 && thunderint <50) {
                 return R.drawable.clouddrizzle;
 
 
@@ -76,7 +79,25 @@ public class GroupIconHelper{
                 return R.drawable.cloudthunderfreezingdrizzle;
             }else if(weatherForm.equals("4")&& cloudint > 4 && thunderint >50){
                 return R.drawable.cloudthunderdrizzle;
-            }else{
+            }
+
+            //weird cases with thunder
+            else if(weatherForm.equals("0") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("1") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("2") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("3") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("4") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("5") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }else if(weatherForm.equals("6") &&  thunderint >50 && clouds.equals("0")){
+                return R.drawable.cloudthunderdrizzle;
+            }
+            else{
                 return R.drawable.ic_launcher;
             }
         }

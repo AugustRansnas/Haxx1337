@@ -1,7 +1,12 @@
 package testing.august.com.haxx.HelpClasses;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,7 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
+import testing.august.com.haxx.Activities.MainActivity;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
@@ -45,6 +53,24 @@ public class HaxxGeoCoder {
         new getAddressTask().execute(uri);
 
 
+    }
+
+    public static String getAddressFromCoordinates(Context context,LatLng latlng) {
+        Geocoder geo = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geo.getFromLocation(latlng.latitude, latlng.longitude, 1);
+            if (addresses.isEmpty()) {
+                return null;
+            } else {
+                if (addresses.size() > 0) {
+                     return addresses.get(0).getLocality();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private class getAddressTask extends AsyncTask<String, Integer, double[]> {
