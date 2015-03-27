@@ -2,6 +2,7 @@ package testing.august.com.haxx.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class ShowWeatherActivity extends ActionBarActivity implements Expandable
         }
 
         expListView.setOnGroupExpandListener(this);
+
     }
 
     @Override

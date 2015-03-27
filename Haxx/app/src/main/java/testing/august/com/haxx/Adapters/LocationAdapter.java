@@ -38,7 +38,5 @@ public class LocationAdapter extends ArrayAdapter<Location> {
         TextView locationName = (TextView) row.findViewById(android.R.id.text1);
         locationName.setText(allLocations.get(position).getLocationName());
         return row;
-
     }
-
 }
