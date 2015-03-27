@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="Grader"
             android:textSize="36sp"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,21 +49,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="VindHastighet"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblWindDirection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Vindriktning"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblWindGusts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Vindbyar"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         </LinearLayout>
 
     <LinearLayout
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sikt"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
 
         <TextView
             android:layout_weight="1"
@@ -85,14 +85,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Moln"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblHumidity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fuktighet"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         </LinearLayout>
 
     <LinearLayout
@@ -105,21 +105,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Åska"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblSnow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Snö"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         <TextView
             android:layout_weight="1"
             android:id="@+id/lblForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Form"
-            android:textColor="#ffffff" />
+            android:textColor="#D1CCBF" />
         </LinearLayout>
 
 
