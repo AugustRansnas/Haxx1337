@@ -1,12 +1,15 @@
 package testing.august.com.haxx.Activities;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import testing.august.com.haxx.Adapters.ExpandableListViewAdapter;
+import testing.august.com.haxx.Adapters.WeatherFragmentPagerAdapter;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
@@ -14,7 +17,7 @@ import testing.august.com.haxx.pojo.TimeSeries;
 /**
  * Created by Benny on 2015-03-10.
  */
-public class ShowWeatherActivity extends ActionBarActivity implements ExpandableListView.OnGroupExpandListener {
+public class ShowWeatherActivity extends FragmentActivity implements ExpandableListView.OnGroupExpandListener {
 
     private String locationName;
     private double latitude;
@@ -28,6 +31,11 @@ public class ShowWeatherActivity extends ActionBarActivity implements Expandable
         setContentView(R.layout.activity_show_weather);
         Bundle extras = getIntent().getExtras();
 
+        WeatherFragmentPagerAdapter fpa = new WeatherFragmentPagerAdapter(getSupportFragmentManager());
+
+        ViewPager vp = (ViewPager) findViewById(R.id.pager);
+        vp.setAdapter(fpa);
+
         Location loc = null;
 
         if (extras != null) {
@@ -37,13 +45,13 @@ public class ShowWeatherActivity extends ActionBarActivity implements Expandable
 
         }
 
-        expListView = (ExpandableListView) findViewById(R.id.expandList);
+        /*expListView = (ExpandableListView) findViewById(R.id.expandList);
         if(loc != null){
             listAdapter = new ExpandableListViewAdapter(this, loc);
             expListView.setAdapter(listAdapter);
         }
 
-        expListView.setOnGroupExpandListener(this);
+        expListView.setOnGroupExpandListener(this);*/
     }
 
     @Override

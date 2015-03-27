@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="Dag"
-            android:textColor="#f9f93d" />
+            android:textColor="#D1CCBF" />
 
         <TextView
             android:layout_weight="1"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="Temp(H)"
-            android:textColor="#f9f93d" />
+            android:textColor="#D1CCBF" />
 
         <TextView
             android:layout_weight="1"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="Temp(L)"
-            android:textColor="#f9f93d" />
+            android:textColor="#D1CCBF" />
 
         <TextView
             android:layout_weight="1"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="Nederbörd"
-            android:textColor="#f9f93d" />
+            android:textColor="#D1CCBF" />
 
         <TextView
             android:layout_weight="1"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:text=""
-            android:textColor="#f9f93d" />
+            android:textColor="#D1CCBF" />
 
 
     </LinearLayout>
@@ -63,11 +63,12 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:background="#f9f93d" />
+        android:background="#D1CCBF"/>
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <ExpandableListView
-        android:id="@+id/expandList"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
 
 </LinearLayout>

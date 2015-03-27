@@ -329,7 +329,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         this.clickedLongitude = latLng.longitude;
         if(address == null){
 
-            Toast.makeText(this,"Strängen är tom", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Det finns ingen address på denna platsen", Toast.LENGTH_SHORT).show();
 
         }
         this.locationName = address;

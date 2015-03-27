@@ -21,7 +21,7 @@ public class GroupIconHelper{
                 return R.drawable.sun;
             }else if(cloudint > 0 && cloudint <5 && weatherForm.equals("0")&& thunderint <50){
                 return R.drawable.suncloudm;
-            }else if(cloudint > 4 && cloudint <=8 && weatherForm.equals("0")&& thunderint <50) {
+            }else if(cloudint > 4 && cloudint <=7 && weatherForm.equals("0")&& thunderint <50) {
                 return R.drawable.suncloudh;
             }else if(weatherForm.equals("3") && clouds.equals("0")&& thunderint <50){
                 return R.drawable.cloudrain;
