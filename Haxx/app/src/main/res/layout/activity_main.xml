@@ -7,8 +7,10 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,14 +24,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/etSearchBox"
                 android:layout_weight="5"
-                android:hint="@string/enter_location" />
+                android:hint="@string/enter_location"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/btnSearch"
                 android:layout_weight="1"
-                android:text="@string/Go_to_location" />
+                android:text="@string/Go_to_location"/>
 
         </LinearLayout>
 
@@ -39,7 +41,6 @@
             android:layout_height="match_parent"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_above="@+id/lId" />
-
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleLarge"
@@ -47,24 +48,17 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:visibility="gone"></ProgressBar>
-
-        <com.quinny898.library.persistentsearch.SearchBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchbox"
-            />
+            android:visibility="gone">
+        </ProgressBar>
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/left_drawer"
+    <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:background="@android:color/holo_orange_dark"
-        android:dividerHeight="0dp" />
-
+        android:dividerHeight="0dp"/>
 </android.support.v4.widget.DrawerLayout>
 

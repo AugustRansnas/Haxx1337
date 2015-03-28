@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
@@ -29,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,8 +41,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.quinny898.library.persistentsearch.SearchBox;
-import com.quinny898.library.persistentsearch.SearchResult;
 
 import org.json.JSONObject;
 
@@ -64,7 +62,7 @@ import testing.august.com.haxx.pojo.Location;
 
 public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoCoderCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
+        OnMapReadyCallback, View.OnClickListener, AdapterView.OnItemClickListener, GoogleMap.OnCameraChangeListener , GoogleMap.OnMapLongClickListener,GoogleMap.OnMarkerClickListener {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -79,7 +77,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private ActionMode mActionMode;
 
     private EditText searchBox;
-    private Button btnSearch;
+    private Button search;
     private MapFragment mapFragment;
 
     private ActionBarDrawerToggle drawerToggle;
@@ -99,8 +97,12 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     private ProgressBar bar;
     private String ourAddress;
     private HaxxGeoCoder geoCoder;
+
+
+    //Bara för test
+    private static Toast toast;
     private LatLng previousLocation;
-    private SearchBox search;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,17 +112,19 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         loadLocationsFromDb();
     }
 
+
     private void setUpComponents(Bundle savedInstanceState) {
+
         locationList = new ArrayList<Location>();
         dataSource = new WeatherDataSource(this);
         mTitle = mDrawerTitle = getTitle();
 
         searchBox = (EditText) findViewById(R.id.etSearchBox);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
+        search = (Button) findViewById(R.id.btnSearch);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayoutListView = (ListView) findViewById(R.id.left_drawer);
-        btnSearch.setOnClickListener(this);
+        search.setOnClickListener(this);
         locationAdapter = new LocationAdapter(this, locationList);
         drawerLayoutListView.setAdapter(locationAdapter);
         drawerLayoutListView.setOnItemClickListener(this);
@@ -164,60 +168,11 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
         mapFragment.getMap().setOnMapLongClickListener(this);
         mapFragment.getMap().setOnMarkerClickListener(this);
-
-        setUpSearchBox();
-    }
-
-    private void setUpSearchBox(){
-        search = (SearchBox) findViewById(R.id.searchbox);
-/*        for(int x = 0; x < 10; x++){
-            SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_launcher));
-            search.addSearchable(option);
-        }*/
-        search.setLogoText("My App");
-        search.setMenuListener(new SearchBox.MenuListener(){
-
-            @Override
-            public void onMenuClick() {
-                //Hamburger has been clicked
-                Toast.makeText(MainActivity.this, "Menu click", Toast.LENGTH_LONG).show();
-            }
-
-        });
-        search.setSearchListener(new SearchBox.SearchListener(){
-
-            @Override
-            public void onSearchOpened() {
-                //Use this to tint the screen
-            }
-
-            @Override
-            public void onSearchClosed() {
-                //Use this to un-tint the screen
-            }
-
-            @Override
-            public void onSearchTermChanged() {
-                //React to the search term changing
-                //Called after it has updated results
-            }
-
-            @Override
-            public void onSearch(String searchTerm) {
-                Toast.makeText(MainActivity.this, searchTerm +" Searched", Toast.LENGTH_LONG).show();
-                SearchResult option = new SearchResult(searchTerm, getResources().getDrawable(R.drawable.ic_launcher));
-                search.addSearchable(option);
-            }
-
-            @Override
-            public void onSearchCleared() {
-
-            }
-
-        });
     }
 
     private void loadLocationsFromDb() {
+
+
         try {
             dataSource.open();
             locationList = dataSource.getAllLocations();
@@ -226,37 +181,15 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
             e.printStackTrace();
         }
         refreshLocationAdapter();
+
     }
 
     private void refreshLocationAdapter() {
+
         locationAdapter.clear();
         locationAdapter.addAll(locationList);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1234 && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            search.populateEditText(matches);
-        }
-
-        if (requestCode == REQUEST_RESOLVE_ERROR) {
-            mResolvingError = false;
-            if (resultCode == RESULT_OK) {
-                // Make sure the app is not already connected or attempting to connect
-                if (!mGoogleApiClient.isConnecting() &&
-                        !mGoogleApiClient.isConnected()) {
-                    mGoogleApiClient.connect();
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void mic(View v) {
-        search.micClick(this);
-    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -284,6 +217,8 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
     }
 
     protected void getWeatherFromCoordinates(double longitude, double latitude) {
+
+
         DecimalFormat df = new DecimalFormat("####0.00");
         System.out.println("Value: " + df.format(longitude).replace(",", "."));
         try {
@@ -300,14 +235,21 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         switch (v.getId()) {
 
             case R.id.btnSearch:
+
                 ourAddress = searchBox.getText().toString();
                 geoCoder.getLatLongFromAddress(ourAddress);
+
                 break;
         }
     }
 
+
+
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
         drawerLayoutListView.setItemChecked(position, true);
         drawerLayout.closeDrawer(drawerLayoutListView);
         setTitle("Item " + String.valueOf(position));
@@ -358,6 +300,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
                     .position(new LatLng(clickedLatitude, clickedLongitude)));
 
+
         } else {
             Toast.makeText(this, getResources().getString(R.string.coordinates_out_of_bounds_error_msg), Toast.LENGTH_SHORT).show();
         }
@@ -365,6 +308,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
         if (mActionMode != null) {
             return false;
         }
@@ -375,19 +319,23 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        mapFragment.getMap().clear();
-        mapFragment.getMap().addMarker(new MarkerOptions()
+                mapFragment.getMap().clear();
+                mapFragment.getMap().addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapmarker))
                 .position(latLng));
 
-        String address = HaxxGeoCoder.getAddressFromCoordinates(this, latLng);
+        String address = HaxxGeoCoder.getAddressFromCoordinates(this,latLng);
         this.clickedLatitude = latLng.latitude;
         this.clickedLongitude = latLng.longitude;
-        if (address == null) {
-            Toast.makeText(this, "Det finns ingen address på denna platsen", Toast.LENGTH_SHORT).show();
+        if(address == null){
+
+            Toast.makeText(this,"Det finns ingen address på denna platsen", Toast.LENGTH_SHORT).show();
+
         }
         this.locationName = address;
-    }
+
+        }
+
 
     /* A fragment to display an error dialog */
     public static class ErrorDialogFragment extends DialogFragment {
@@ -406,6 +354,20 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         @Override
         public void onDismiss(DialogInterface dialog) {
             ((MainActivity) getActivity()).onDialogDismissed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            mResolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!mGoogleApiClient.isConnecting() &&
+                        !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
         }
     }
 
@@ -533,8 +495,8 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         double longitude = position.longitude;
         double latitude = position.latitude;
 
-        if (!CoordinateBoundsHelper.isCoordinatesWithinBounds(longitude, latitude)) {
-            if (mapFragment != null) {
+        if(!CoordinateBoundsHelper.isCoordinatesWithinBounds(longitude, latitude)){
+            if(mapFragment != null){
                 GoogleMap map = mapFragment.getMap();
                 LatLng coordinates = new LatLng(previousLocation.latitude, previousLocation.longitude);
                 float zoom = map.getCameraPosition().zoom;
@@ -542,7 +504,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(oldCameraPosition), 1000, null);
             }
 
-        } else {
+        }else{
             this.previousLocation = new LatLng(position.latitude, position.longitude);
         }
     }
@@ -571,7 +533,7 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
             switch (item.getItemId()) {
                 case R.id.showWeather:
 
-                    getWeatherFromCoordinates(clickedLongitude, clickedLatitude);
+                   getWeatherFromCoordinates(clickedLongitude,clickedLatitude);
 
                     return true;
                 case R.id.addToFavorites:
@@ -631,7 +593,9 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
             for (URL url : urls) {
                 System.out.println(url);
                 JSONObject json = DownloadWeather.downloadWeather(url);
+
                 location = JSONparser.parseJSONobject(json);
+
 
             }
 
@@ -651,9 +615,11 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
         protected void onPostExecute(Location location) {
             super.onPostExecute(location);
 
+
+
             bar.setVisibility(View.GONE);
 
-            if (location != null && locationName != null) {
+            if (location != null && locationName!=null) {
                 isWeatherDownloadReady = true;
                 long timeDifference = MAP_ANIMATION_TIME + mapAnimationStartTime - Calendar.getInstance().getTimeInMillis();
                 location.setLocationName(locationName);
@@ -685,10 +651,12 @@ public class MainActivity extends ActionBarActivity implements HaxxGeoCoder.GeoC
                             startActivity(i);
                         }
                     }.start();
+
                 }
             } else {
                 System.out.println("Location är null");
             }
+
         }
     }
 }
