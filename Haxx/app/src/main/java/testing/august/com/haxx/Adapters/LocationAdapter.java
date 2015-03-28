@@ -18,7 +18,7 @@ public class LocationAdapter extends ArrayAdapter<Location> {
 
     private ArrayList<Location> allLocations;
 
-    public LocationAdapter(Context context, ArrayList allLocations) {
+    public LocationAdapter(Context context, ArrayList<Location> allLocations) {
         super(context, android.R.layout.simple_list_item_1, allLocations);
         this.allLocations = allLocations;
     }
