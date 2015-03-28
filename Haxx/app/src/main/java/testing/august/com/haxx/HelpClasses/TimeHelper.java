@@ -40,8 +40,12 @@ public class TimeHelper {
             boolean dayAfter = c.get(Calendar.YEAR) == t.get(Calendar.YEAR) &&
                     c.get(Calendar.DAY_OF_YEAR) == t.get(Calendar.DAY_OF_YEAR);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE",Locale.getDefault());
             String dayOfTheWeek = sdf.format(myDate);
+
+
+
+
 
 
             if(sameDay) {
@@ -49,27 +53,28 @@ public class TimeHelper {
             }else if(dayAfter){
                 day= "Imorgon";
             }else{
+                System.out.println(dayOfTheWeek);
                 switch(dayOfTheWeek){
 
-                case "Monday":
+                case "måndag":
                     day="Måndag";
                     break;
-                case "Tuesday":
+                case "tisdag":
                     day = "Tisdag";
                     break;
-                case "Wednesday":
+                case "onsdag":
                     day = "Onsdag";
                     break;
-                case "Thursday":
+                case "torsdag":
                     day = "Torsdag";
                     break;
-                case "Friday":
+                case "fredag":
                     day = "Fredag";
                     break;
-                case "Saturday":
+                case "lördag":
                     day = "Lördag";
                     break;
-                case "Sunday":
+                case "söndag":
                     day = "Söndag";
                     break;
 
