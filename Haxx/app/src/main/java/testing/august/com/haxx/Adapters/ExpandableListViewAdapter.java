@@ -129,11 +129,11 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         ImageView windDirection = (ImageView)row.findViewById(R.id.imgWindDirection);
         TextView windGusts = (TextView)row.findViewById(R.id.lblWindGusts);
         TextView visibility = (TextView)row.findViewById(R.id.lblVisibility);
-        TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
+        //TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
         TextView humidity = (TextView)row.findViewById(R.id.lblHumidity);
         TextView thunder = (TextView)row.findViewById(R.id.lblProbabilityOfThunder);
         TextView snow = (TextView)row.findViewById(R.id.lblSnow);
-        TextView form = (TextView)row.findViewById(R.id.lblForm);
+        //TextView form = (TextView)row.findViewById(R.id.lblForm);
 
         TimeSeries timeSeries = timeseries.get(groupPosition);
 
@@ -143,11 +143,11 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         windDirection.setImageResource(ChildIconHelper.setCompassIcon(timeSeries));
         windGusts.setText(timeSeries.getWindGusts());
         visibility.setText(timeSeries.getVisibility());
-        totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
+       // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
         humidity.setText(timeSeries.getRelativeHumidity());
         thunder.setText(timeSeries.getProbabilityForThunder());
         snow.setText(timeSeries.getPrecipitationSnow());
-        form.setText(timeSeries.getPrecipitationForm());
+       // form.setText(timeSeries.getPrecipitationForm());
 
         return row;
     }
