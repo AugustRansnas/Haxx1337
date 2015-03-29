@@ -34,8 +34,6 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
             WeatherFragment fragment = new WeatherFragment();
             Bundle args = new Bundle();
 
-
-            System.out.println(loc.getTimeSeries() + " ********* början av getITEM");
             ArrayList<TimeSeries> ts = loc.getTimeSeries();
             ArrayList<TimeSeries> selection = new ArrayList<>();
             Location tmpLocation = new Location();
@@ -74,10 +72,8 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
             }
             tmpLocation.setTimeSeries(selection);
             tmpLocation.setReferenceTime(loc.getReferenceTime());
-            System.out.println(tmpLocation.getTimeSeries()+ "****** tmpLocation.setTimeSeries(selection);");
             args.putParcelable("location",tmpLocation);
             fragment.setArguments(args);
-
             return fragment;
         }
 
@@ -88,7 +84,19 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
+
+            if(position == 0){
+
+                return "1 h prognos";
+            }else if(position == 1){
+                return "3 h prognos";
+            }else if(position == 2){
+                return "6 h prognos";
+            }else if(position == 3){
+                return "12 h prognos";
+            }else {
+                return "OBJECT " + (position + 1);
+            }
         }
     }
 

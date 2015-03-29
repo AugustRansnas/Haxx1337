@@ -43,11 +43,6 @@ public class TimeHelper {
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE",Locale.getDefault());
             String dayOfTheWeek = sdf.format(myDate);
 
-
-
-
-
-
             if(sameDay) {
                 day = "Idag";
             }else if(dayAfter){

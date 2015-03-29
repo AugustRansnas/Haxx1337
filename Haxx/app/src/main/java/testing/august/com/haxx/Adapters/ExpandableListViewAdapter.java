@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import testing.august.com.haxx.HelpClasses.ChildIconHelper;
 import testing.august.com.haxx.HelpClasses.GroupIconHelper;
 import testing.august.com.haxx.HelpClasses.TemperatureHelper;
 import testing.august.com.haxx.HelpClasses.TimeHelper;
@@ -125,7 +126,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
         TextView temp = (TextView)row.findViewById(R.id.lblTemp);
         TextView windSpeed = (TextView)row.findViewById(R.id.lblWindSpeed);
-        TextView windDirection = (TextView)row.findViewById(R.id.lblWindDirection);
+        ImageView windDirection = (ImageView)row.findViewById(R.id.imgWindDirection);
         TextView windGusts = (TextView)row.findViewById(R.id.lblWindGusts);
         TextView visibility = (TextView)row.findViewById(R.id.lblVisibility);
         TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
@@ -136,10 +137,10 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
         TimeSeries timeSeries = timeseries.get(groupPosition);
 
-        temp.setText(timeSeries.getAirTemperature());
+        temp.setText(timeSeries.getAirTemperature() + row.getResources().getString(R.string.degrees));
 
         windSpeed.setText(timeSeries.getWindSpeed());
-        windDirection.setText(timeSeries.getWindDirection());
+        windDirection.setImageResource(ChildIconHelper.setCompassIcon(timeSeries));
         windGusts.setText(timeSeries.getWindGusts());
         visibility.setText(timeSeries.getVisibility());
         totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
