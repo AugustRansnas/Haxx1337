@@ -18,7 +18,7 @@ import testing.august.com.haxx.pojo.TimeSeries;
 /**
  * Created by Benny on 2015-03-10.
  */
-public class ShowWeatherActivity extends FragmentActivity implements ExpandableListView.OnGroupExpandListener, ViewPager.OnPageChangeListener {
+public class ShowWeatherActivity extends FragmentActivity implements  ViewPager.OnPageChangeListener {
 
     Location loc;
     WeatherFragmentPagerAdapter fpa;
@@ -35,8 +35,6 @@ public class ShowWeatherActivity extends FragmentActivity implements ExpandableL
         if (extras != null) {
 
             loc = extras.getParcelable("location");
-            System.out.println(loc.getLocationName() + "******* showweather oncreate");
-            System.out.println(loc.getTimeSeries());
             fpa = new WeatherFragmentPagerAdapter(getSupportFragmentManager(),loc);
             vp = (ViewPager) findViewById(R.id.pager);
             vp.setAdapter(fpa);
@@ -47,10 +45,6 @@ public class ShowWeatherActivity extends FragmentActivity implements ExpandableL
 
     }
 
-    @Override
-    public void onGroupExpand(int groupPosition) {
-
-    }
 
 
     @Override
@@ -61,43 +55,6 @@ public class ShowWeatherActivity extends FragmentActivity implements ExpandableL
     @Override
     public void onPageSelected(int position) {
 
-/*        ArrayList<TimeSeries> ts = loc.getTimeSeries();
-        ArrayList<TimeSeries> selection = new ArrayList<>();
-        Location tmpLocation = new Location();
-
-        switch (position) {
-
-            case 0:
-                //50
-                for (int i = 0; ts.size() <= 50; i++) {
-                    selection.add(ts.get(i));
-                }
-
-                break;
-            case 1:
-                //4
-                for (int i = 50; ts.size() <= 53; i++) {
-                    selection.add(ts.get(i));
-                }
-
-                break;
-            case 2:
-                //15
-                for (int i = 54; ts.size() <= 68; i++) {
-                    selection.add(ts.get(i));
-                }
-
-                break;
-            case 3:
-                //6
-                for (int i = 69; ts.size() <= 74; i++) {
-                    selection.add(ts.get(i));
-                }
-                break;
-        }
-        tmpLocation.setTimeSeries(selection);
-        WeatherFragment fragment = (WeatherFragment)fpa.instantiateItem(vp,position);
-        fragment.showTimeSeriesInList(tmpLocation);*/
 
     }
 

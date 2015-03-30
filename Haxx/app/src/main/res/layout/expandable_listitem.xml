@@ -2,24 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#000000"
+    android:background="#35a79c"
     android:orientation="vertical">
-
-    <!-- private String time;
-    private String airTemperature;
-    private String visibility;
-    private String windDirection;
-    private String windSpeed;
-    private String relativeHumidity;
-    private String probabilityForThunder;
-    private String totalAmountOfCloud;
-    private String amountOfCloudLow;
-    private String amountOfCloudMedium;
-    private String amountOfCloudHigh;
-    private String windGusts;
-    private String precipitationTotal;
-    private String precipitationSnow;
-    private String precipitationForm;-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,15 +11,135 @@
         android:orientation="horizontal">
 
         <TextView
-            android:paddingTop="50dp"
-            android:paddingBottom="50dp"
-            android:gravity="center"
             android:id="@+id/lblTemp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="50dp"
+            android:paddingTop="50dp"
             android:text="Grader"
-            android:textSize="36sp"
-            android:textColor="#D1CCBF" />
+            android:textColor="#000000"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgWindSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/wind" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/labelWindSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hastighet:"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/labelWindGusts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Byar:"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblWindSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="15 m/s"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/lblWindGusts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="22 m/s"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgWindDirection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/lblWindDirection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="NV"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgVisibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/sikt" />
+
+        <TextView
+            android:id="@+id/labelVisibility"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="Sikt:"
+            android:textColor="#000000" />
+        <TextView
+            android:id="@+id/lblVisibility"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="8 km"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/imgHumidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher" />
+
+
+        <TextView
+            android:id="@+id/lblHumidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Fuktighet"
+            android:textColor="#000000" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,83 +148,23 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblWindSpeed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="VindHastighet"
-            android:textColor="#D1CCBF" />
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblWindDirection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Vindriktning"
-            android:textColor="#D1CCBF" />
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblWindGusts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Vindbyar"
-            android:textColor="#D1CCBF" />
-        </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblVisibility"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sikt"
-            android:textColor="#D1CCBF" />
-
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblTotalAmountOfClouds"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Moln"
-            android:textColor="#D1CCBF" />
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/lblHumidity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fuktighet"
-            android:textColor="#D1CCBF" />
-        </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_weight="1"
             android:id="@+id/lblProbabilityOfThunder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Åska"
-            android:textColor="#D1CCBF" />
-        <TextView
             android:layout_weight="1"
+            android:text="Åska"
+            android:textColor="#000000" />
+
+        <TextView
             android:id="@+id/lblSnow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Snö"
-            android:textColor="#D1CCBF" />
-        <TextView
             android:layout_weight="1"
-            android:id="@+id/lblForm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Form"
-            android:textColor="#D1CCBF" />
-        </LinearLayout>
+            android:text="Snö"
+            android:textColor="#000000" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

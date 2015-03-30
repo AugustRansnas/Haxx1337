@@ -23,6 +23,7 @@ public class WeatherFragment extends Fragment implements ExpandableListView.OnGr
 
     ExpandableListViewAdapter listAdapter;
     ExpandableListView expListView;
+    int previousGroup = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,22 +41,15 @@ public class WeatherFragment extends Fragment implements ExpandableListView.OnGr
 
         expListView.setOnGroupExpandListener(this);
 
-
-/*        TextView tv = (TextView)view.findViewById(R.id.tvRandom);
-        tv.setText(String.valueOf(getArguments().getInt("position")));*/
         return view;
-
-
-    }
-
-    public void showTimeSeriesInList(Location loc){
-
-
-
     }
 
     @Override
     public void onGroupExpand(int groupPosition) {
+
+        if(groupPosition != previousGroup)
+            expListView.collapseGroup(previousGroup);
+        previousGroup = groupPosition;
 
     }
 }

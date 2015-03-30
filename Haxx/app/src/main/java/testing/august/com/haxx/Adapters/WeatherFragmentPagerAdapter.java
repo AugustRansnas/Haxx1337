@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.google.android.gms.internal.pu;
 
 import java.util.ArrayList;
 
@@ -16,76 +19,84 @@ import testing.august.com.haxx.pojo.TimeSeries;
  */
 public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    Location loc;
+        Location loc;
 
 
-    public WeatherFragmentPagerAdapter(FragmentManager fm, Location loc) {
-        super(fm);
-        this.loc = loc;
-        System.out.println(loc.getTimeSeries() + " *** konstruktor PagerAdapter");
-    }
-
-    @Override
-    public Fragment getItem(int i) {
-        int position = i;
-        WeatherFragment fragment = new WeatherFragment();
-        Bundle args = new Bundle();
-
-
-        System.out.println(loc.getTimeSeries() + " ********* början av getITEM");
-        ArrayList<TimeSeries> ts = loc.getTimeSeries();
-        ArrayList<TimeSeries> selection = new ArrayList<>();
-        Location tmpLocation = new Location();
-
-        System.out.println(position);
-
-        switch (position) {
-
-            case 0:
-                //50
-                for (int n = 0; n <= 50; n++) {
-                    selection.add(ts.get(n));
-                }
-
-                break;
-            case 1:
-                //4
-                for (int n = 50; n <= 53; n++) {
-                    selection.add(ts.get(n));
-                }
-
-                break;
-            case 2:
-                //15
-                for (int n = 54; n <= 68; n++) {
-                    selection.add(ts.get(n));
-                }
-
-                break;
-            case 3:
-                //6
-                for (int n = 69; n <= 74; n++) {
-                    selection.add(ts.get(n));
-                }
-                break;
+        public WeatherFragmentPagerAdapter(FragmentManager fm, Location loc) {
+            super(fm);
+            this.loc = loc;
+            System.out.println(loc.getTimeSeries()+ " *** konstruktor PagerAdapter");
         }
-        tmpLocation.setTimeSeries(selection);
-        tmpLocation.setReferenceTime(loc.getReferenceTime());
-        System.out.println(tmpLocation.getTimeSeries() + "****** tmpLocation.setTimeSeries(selection);");
-        args.putParcelable("location", tmpLocation);
-        fragment.setArguments(args);
 
-        return fragment;
-    }
+        @Override
+        public Fragment getItem(int i ) {
+            int position = i;
+            WeatherFragment fragment = new WeatherFragment();
+            Bundle args = new Bundle();
 
-    @Override
-    public int getCount() {
-        return 4;
-    }
+            ArrayList<TimeSeries> ts = loc.getTimeSeries();
+            ArrayList<TimeSeries> selection = new ArrayList<>();
+            Location tmpLocation = new Location();
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "OBJECT " + (position + 1);
+            System.out.println(position);
+
+            switch (position) {
+
+                case 0:
+                    //50
+                    for (int n = 0; n <= 50; n++) {
+                        selection.add(ts.get(n));
+                    }
+
+                    break;
+                case 1:
+                    //4
+                    for (int n = 50; n <= 53; n++) {
+                        selection.add(ts.get(n));
+                    }
+
+                    break;
+                case 2:
+                    //15
+                    for (int n = 54; n <= 68; n++) {
+                        selection.add(ts.get(n));
+                    }
+
+                    break;
+                case 3:
+                    //6
+                    for (int n = 69; n <= 74; n++) {
+                        selection.add(ts.get(n));
+                    }
+                    break;
+            }
+            tmpLocation.setTimeSeries(selection);
+            tmpLocation.setReferenceTime(loc.getReferenceTime());
+            args.putParcelable("location",tmpLocation);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            if(position == 0){
+
+                return "1 h prognos";
+            }else if(position == 1){
+                return "3 h prognos";
+            }else if(position == 2){
+                return "6 h prognos";
+            }else if(position == 3){
+                return "12 h prognos";
+            }else {
+                return "OBJECT " + (position + 1);
+            }
+        }
     }
-}
 
