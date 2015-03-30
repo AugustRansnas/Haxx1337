@@ -6,15 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
-import android.widget.TextView;
 
-import java.util.ArrayList;
+import android.widget.ExpandableListView;
+
 
 import testing.august.com.haxx.Adapters.ExpandableListViewAdapter;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
-import testing.august.com.haxx.pojo.TimeSeries;
+
 
 /**
  * Created by Benny on 2015-03-27.
