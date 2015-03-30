@@ -1,7 +1,5 @@
 package testing.august.com.haxx.HelpClasses;
 
-import com.google.android.gms.internal.ge;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,43 +38,39 @@ public class TimeHelper {
             boolean dayAfter = c.get(Calendar.YEAR) == t.get(Calendar.YEAR) &&
                     c.get(Calendar.DAY_OF_YEAR) == t.get(Calendar.DAY_OF_YEAR);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("EEEE",Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
             String dayOfTheWeek = sdf.format(myDate);
 
 
-
-
-
-
-            if(sameDay) {
+            if (sameDay) {
                 day = "Idag";
-            }else if(dayAfter){
-                day= "Imorgon";
-            }else{
+            } else if (dayAfter) {
+                day = "Imorgon";
+            } else {
                 System.out.println(dayOfTheWeek);
-                switch(dayOfTheWeek){
+                switch (dayOfTheWeek) {
 
-                case "måndag":
-                    day="Måndag";
-                    break;
-                case "tisdag":
-                    day = "Tisdag";
-                    break;
-                case "onsdag":
-                    day = "Onsdag";
-                    break;
-                case "torsdag":
-                    day = "Torsdag";
-                    break;
-                case "fredag":
-                    day = "Fredag";
-                    break;
-                case "lördag":
-                    day = "Lördag";
-                    break;
-                case "söndag":
-                    day = "Söndag";
-                    break;
+                    case "måndag":
+                        day = "Måndag";
+                        break;
+                    case "tisdag":
+                        day = "Tisdag";
+                        break;
+                    case "onsdag":
+                        day = "Onsdag";
+                        break;
+                    case "torsdag":
+                        day = "Torsdag";
+                        break;
+                    case "fredag":
+                        day = "Fredag";
+                        break;
+                    case "lördag":
+                        day = "Lördag";
+                        break;
+                    case "söndag":
+                        day = "Söndag";
+                        break;
 
                 }
             }
@@ -90,7 +84,7 @@ public class TimeHelper {
 
     public static String getDate(String date) {
         String formatedDate = date.substring(0, 10);
-        String formatTime = date.substring(11,16);
+        String formatTime = date.substring(11, 16);
         return formatedDate + " " + formatTime;
     }
 
