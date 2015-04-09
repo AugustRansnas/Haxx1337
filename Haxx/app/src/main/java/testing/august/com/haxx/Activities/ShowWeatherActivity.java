@@ -18,7 +18,7 @@ import testing.august.com.haxx.pojo.TimeSeries;
 /**
  * Created by Benny on 2015-03-10.
  */
-public class ShowWeatherActivity extends FragmentActivity implements  ViewPager.OnPageChangeListener {
+public class ShowWeatherActivity extends FragmentActivity  {
 
     Location loc;
     WeatherFragmentPagerAdapter fpa;
@@ -40,26 +40,11 @@ public class ShowWeatherActivity extends FragmentActivity implements  ViewPager.
             vp.setAdapter(fpa);
             PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
             tabs.setViewPager(vp);
-            tabs.setOnPageChangeListener(this);
         }
 
     }
 
 
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }

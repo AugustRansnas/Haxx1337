@@ -5,7 +5,6 @@
     android:background="#35a79c"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,9 +15,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="50dp"
-            android:paddingTop="50dp"
-            android:text="Grader"
+            android:paddingBottom="30dp"
+            android:paddingTop="30dp"
+            android:text="20 C"
             android:textColor="#000000"
             android:textSize="36sp" />
     </LinearLayout>
@@ -26,12 +25,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/imgWindSpeed"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:src="@drawable/wind" />
 
@@ -79,12 +79,30 @@
                 android:textColor="#000000" />
         </LinearLayout>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
+
         <ImageView
             android:id="@+id/imgWindDirection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/northwest" />
+
+        <TextView
+            android:id="@+id/labelWindDirection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Vindriktning: "
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/lblWindDirection"
@@ -94,20 +112,20 @@
             android:gravity="center_vertical"
             android:text="NV"
             android:textColor="#000000" />
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/imgVisibility"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="1"
-            android:src="@drawable/sikt" />
+            android:src="@drawable/visibility" />
 
         <TextView
             android:id="@+id/labelVisibility"
@@ -117,6 +135,7 @@
             android:layout_weight="1"
             android:text="Sikt:"
             android:textColor="#000000" />
+
         <TextView
             android:id="@+id/lblVisibility"
             android:layout_width="match_parent"
@@ -125,42 +144,90 @@
             android:layout_weight="1"
             android:text="8 km"
             android:textColor="#000000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/imgHumidity"
             android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:src="@drawable/humidity" />
+
+        <TextView
+            android:id="@+id/labelHumidity"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_launcher" />
-
+            android:text="Fuktighet: "
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/lblHumidity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Fuktighet"
+            android:text="27 %"
             android:textColor="#000000" />
     </LinearLayout>
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/imgThunder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:src="@drawable/thunder" />
+
+        <TextView
+            android:id="@+id/labelProbabilityOfThunder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Åska:"
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/lblProbabilityOfThunder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Åska"
+            android:text=" 5 %"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/imgSnow"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:src="@drawable/snow" />
+
+        <TextView
+            android:id="@+id/labelSnow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Snö: "
             android:textColor="#000000" />
 
         <TextView
@@ -170,8 +237,6 @@
             android:layout_weight="1"
             android:text="Snö"
             android:textColor="#000000" />
-
-
     </LinearLayout>
 
 

@@ -39,4 +39,32 @@ public class ChildIconHelper {
         }
 
     }
+
+    public static int setWindDIrection(TimeSeries ts){
+
+        int windDirection = Integer.valueOf(ts.getWindDirection());
+
+        if(windDirection > 0 && windDirection <=22.5 || windDirection > 337.5 && windDirection<=360 ){
+            return R.string.north ;
+        }else if(windDirection > 22.5 && windDirection <= 67.5){
+            return R.string.northeast;
+        }else if(windDirection > 67.5 && windDirection <= 112.5){
+            return R.string.east;
+        }else if(windDirection > 112.5 && windDirection <= 157.5){
+            return R.string.southeast;
+        }else if(windDirection > 157.5 && windDirection <= 202.5){
+            return R.string.south;
+        }else if(windDirection > 202.5 && windDirection <= 247.5){
+            return R.string.southwest;
+        }else if(windDirection > 247.5 && windDirection <=292.5){
+            return R.string.west;
+        }else if(windDirection > 292.5 && windDirection <= 337.5){
+            return R.string.northwest;
+        }else if(windDirection == 0){
+            return R.string.no_answer;
+        }else{
+            return R.string.no_answer;
+        }
+
+    }
 }

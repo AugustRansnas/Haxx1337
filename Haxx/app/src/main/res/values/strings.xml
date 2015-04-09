@@ -18,4 +18,17 @@
     <string name="coordinates_out_of_bounds_error_msg">Platsen är inte inom den tillåtna gränsen.</string>
 
 
+    <string name="north">N</string>
+    <string name="northwest">NW</string>
+    <string name="northeast">NE</string>
+    <string name="south">S</string>
+    <string name="southwest">SW</string>
+    <string name="southeast">SE</string>
+    <string name="east">E</string>
+    <string name="west">W</string>
+    <string name="no_answer">N/A</string>
+
+
+
+
 </resources>

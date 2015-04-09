@@ -5,7 +5,9 @@ import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,11 +22,12 @@ import testing.august.com.haxx.HelpClasses.TimeHelper;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
+import testing.august.com.haxx.Adapters.AnimatedExpandableListView;
 
 /**
  * Created by Benny on 2015-03-12.
  */
-public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
+public class ExpandableListViewAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 
     private Context context;
     private ArrayList<TimeSeries> timeseries;
@@ -40,10 +43,6 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         return this.timeseries.size();
     }
 
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return 1;
-    }
 
     @Override
     public Object getGroup(int groupPosition) {
@@ -57,18 +56,19 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int groupPosition) {
-        return groupPosition;
+        return 0;
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
+        return 0;
     }
 
     @Override
     public boolean hasStableIds() {
         return false;
     }
+
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
@@ -113,6 +113,53 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        View row;
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this.context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            row = infalInflater.inflate(R.layout.expandable_listitem, null);
+        }else {
+            // reuse old row view to save time/battery
+            row = convertView;
+        }
+
+        TextView temp = (TextView)row.findViewById(R.id.lblTemp);
+        TextView windSpeed = (TextView)row.findViewById(R.id.lblWindSpeed);
+        ImageView windDirection = (ImageView)row.findViewById(R.id.imgWindDirection);
+        TextView windGusts = (TextView)row.findViewById(R.id.lblWindGusts);
+        TextView visibility = (TextView)row.findViewById(R.id.lblVisibility);
+        //TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
+        TextView humidity = (TextView)row.findViewById(R.id.lblHumidity);
+        TextView thunder = (TextView)row.findViewById(R.id.lblProbabilityOfThunder);
+        TextView snow = (TextView)row.findViewById(R.id.lblSnow);
+        TextView windDirectionText = (TextView)row.findViewById(R.id.lblWindDirection);
+        //TextView form = (TextView)row.findViewById(R.id.lblForm);
+
+        TimeSeries timeSeries = timeseries.get(groupPosition);
+
+        temp.setText(timeSeries.getAirTemperature() + row.getResources().getString(R.string.degrees));
+
+        windSpeed.setText(timeSeries.getWindSpeed());
+        windDirection.setImageResource(ChildIconHelper.setCompassIcon(timeSeries));
+        windGusts.setText(timeSeries.getWindGusts());
+        visibility.setText(timeSeries.getVisibility());
+        // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
+        humidity.setText(timeSeries.getRelativeHumidity());
+        thunder.setText(timeSeries.getProbabilityForThunder());
+        snow.setText(timeSeries.getPrecipitationSnow());
+        // form.setText(timeSeries.getPrecipitationForm());
+        windDirectionText.setText(row.getResources().getString(ChildIconHelper.setWindDIrection(timeSeries)));
+
+        return row;
+    }
+
+    @Override
+    public int getRealChildrenCount(int groupPosition) {
+        return 1;
+    }
+
+    /*@Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View row;
         if (convertView == null) {
@@ -133,6 +180,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView humidity = (TextView)row.findViewById(R.id.lblHumidity);
         TextView thunder = (TextView)row.findViewById(R.id.lblProbabilityOfThunder);
         TextView snow = (TextView)row.findViewById(R.id.lblSnow);
+        TextView windDirectionText = (TextView)row.findViewById(R.id.lblWindDirection);
         //TextView form = (TextView)row.findViewById(R.id.lblForm);
 
         TimeSeries timeSeries = timeseries.get(groupPosition);
@@ -143,17 +191,24 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         windDirection.setImageResource(ChildIconHelper.setCompassIcon(timeSeries));
         windGusts.setText(timeSeries.getWindGusts());
         visibility.setText(timeSeries.getVisibility());
-       // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
+        // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
         humidity.setText(timeSeries.getRelativeHumidity());
         thunder.setText(timeSeries.getProbabilityForThunder());
         snow.setText(timeSeries.getPrecipitationSnow());
-       // form.setText(timeSeries.getPrecipitationForm());
+        // form.setText(timeSeries.getPrecipitationForm());
+        windDirectionText.setText(row.getResources().getString(ChildIconHelper.setWindDIrection(timeSeries)));
 
         return row;
-    }
+    }*/
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
     }
+
+/*    @Override
+    public int getChildrenCount(int groupPosition) {
+        return 1;
+    }*/
+
 }
