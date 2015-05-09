@@ -17,6 +17,10 @@ public class Location implements Parcelable {
     private String referenceTime;
     private ArrayList<TimeSeries> timeSeries;
 
+
+
+
+
     public Location() {
     }
 

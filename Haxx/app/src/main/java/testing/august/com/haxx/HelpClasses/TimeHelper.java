@@ -48,7 +48,6 @@ public class TimeHelper {
             }else if(dayAfter){
                 day= "Imorgon";
             }else{
-                System.out.println(dayOfTheWeek);
                 switch(dayOfTheWeek){
 
                 case "måndag":
@@ -87,6 +86,14 @@ public class TimeHelper {
         String formatedDate = date.substring(0, 10);
         String formatTime = date.substring(11,16);
         return formatedDate + " " + formatTime;
+    }
+
+    public static String getDateWithoutTime(String date) {
+        return  date.substring(0, 10);
+    }
+
+    public static String getTime(String date) {
+        return date.substring(11,16);
     }
 
 }

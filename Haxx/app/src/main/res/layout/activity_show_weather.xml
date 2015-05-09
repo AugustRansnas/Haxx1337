@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="Dag"
+            android:text="Tid"
             android:textColor="#D1CCBF" />
 
         <TextView

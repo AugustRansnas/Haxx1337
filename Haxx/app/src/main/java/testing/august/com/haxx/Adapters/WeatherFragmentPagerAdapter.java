@@ -6,97 +6,95 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.google.android.gms.internal.pu;
-
 import java.util.ArrayList;
 
 import testing.august.com.haxx.Fragments.WeatherFragment;
+import testing.august.com.haxx.HelpClasses.TimeHelper;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
 
 /**
  * Created by Benny on 2015-03-27.
  */
-public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
+public class WeatherFragmentPagerAdapter extends FragmentStatePagerAdapter implements WeatherFragment.OnRefreshContentListener {
 
-        Location loc;
+    Location loc;
+    ArrayList<String> dates;
+    ArrayList<TimeSeries> ts;
 
 
-        public WeatherFragmentPagerAdapter(FragmentManager fm, Location loc) {
-            super(fm);
-            this.loc = loc;
-            System.out.println(loc.getTimeSeries()+ " *** konstruktor PagerAdapter");
-        }
+    public WeatherFragmentPagerAdapter(FragmentManager fm, Location loc) {
+        super(fm);
+        this.loc = loc;
+        setUp();
 
-        @Override
-        public Fragment getItem(int i ) {
-            int position = i;
-            WeatherFragment fragment = new WeatherFragment();
-            Bundle args = new Bundle();
+    }
 
-            ArrayList<TimeSeries> ts = loc.getTimeSeries();
-            ArrayList<TimeSeries> selection = new ArrayList<>();
-            Location tmpLocation = new Location();
+    public void setUp(){
 
-            System.out.println(position);
+        ts = loc.getTimeSeries();
+        dates = new ArrayList<>();
 
-            switch (position) {
+        for (TimeSeries t : ts) {
+            String day = TimeHelper.getDay(t.getTime());
+            String date = TimeHelper.getDateWithoutTime(t.getTime());
 
-                case 0:
-                    //50
-                    for (int n = 0; n <= 50; n++) {
-                        selection.add(ts.get(n));
-                    }
+            String daydate = day + " " + date;
 
-                    break;
-                case 1:
-                    //4
-                    for (int n = 50; n <= 53; n++) {
-                        selection.add(ts.get(n));
-                    }
-
-                    break;
-                case 2:
-                    //15
-                    for (int n = 54; n <= 68; n++) {
-                        selection.add(ts.get(n));
-                    }
-
-                    break;
-                case 3:
-                    //6
-                    for (int n = 69; n <= 74; n++) {
-                        selection.add(ts.get(n));
-                    }
-                    break;
-            }
-            tmpLocation.setTimeSeries(selection);
-            tmpLocation.setReferenceTime(loc.getReferenceTime());
-            args.putParcelable("location",tmpLocation);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 4;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            if(position == 0){
-
-                return "1 h prognos";
-            }else if(position == 1){
-                return "3 h prognos";
-            }else if(position == 2){
-                return "6 h prognos";
-            }else if(position == 3){
-                return "12 h prognos";
-            }else {
-                return "OBJECT " + (position + 1);
+            if (!dates.contains(daydate)) {
+                dates.add(daydate);
             }
         }
     }
+
+    @Override
+    public Fragment getItem(int i) {
+
+        WeatherFragment fragment = new WeatherFragment();
+        Bundle args = new Bundle();
+        ArrayList<TimeSeries> selection = new ArrayList<>();
+        Location tmpLocation = new Location();
+        tmpLocation.setLatitude(loc.getLatitude());
+        tmpLocation.setLongitude(loc.getLongitude());
+        fragment.setListener(this);
+
+        for(TimeSeries t:ts){
+            String day = TimeHelper.getDay(t.getTime());
+            String date = TimeHelper.getDateWithoutTime(t.getTime());
+            String daydate = day + " " + date;
+            if(dates.get(i).equals(daydate)){
+                selection.add(t);
+            }
+        }
+
+        tmpLocation.setTimeSeries(selection);
+        tmpLocation.setReferenceTime(loc.getReferenceTime());
+        args.putParcelable("location", tmpLocation);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public int getCount() {
+        return dates.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return dates.get(position);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+
+    @Override
+    public void onRefreshContent(Location loc) {
+        this.loc = loc;
+        setUp();
+        notifyDataSetChanged();
+    }
+}
 

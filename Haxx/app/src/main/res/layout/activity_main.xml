@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <RelativeLayout
 
         android:layout_width="match_parent"
@@ -18,6 +20,8 @@
             android:layout_alignParentBottom="true"
             android:id="@+id/lId"
             android:weightSum="6">
+
+
 
             <EditText
                 android:layout_width="wrap_content"
@@ -32,6 +36,7 @@
                 android:id="@+id/btnSearch"
                 android:layout_weight="1"
                 android:text="@string/Go_to_location"/>
+
 
         </LinearLayout>
 
@@ -51,6 +56,12 @@
             android:visibility="gone">
         </ProgressBar>
     </RelativeLayout>
+
+    <com.quinny898.library.persistentsearch.SearchBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchbox"
+        />
 
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"

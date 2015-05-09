@@ -1,19 +1,14 @@
 package testing.august.com.haxx.Adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import testing.august.com.haxx.HelpClasses.ChildIconHelper;
 import testing.august.com.haxx.HelpClasses.GroupIconHelper;
@@ -22,7 +17,6 @@ import testing.august.com.haxx.HelpClasses.TimeHelper;
 import testing.august.com.haxx.R;
 import testing.august.com.haxx.pojo.Location;
 import testing.august.com.haxx.pojo.TimeSeries;
-import testing.august.com.haxx.Adapters.AnimatedExpandableListView;
 
 /**
  * Created by Benny on 2015-03-12.
@@ -84,24 +78,21 @@ public class ExpandableListViewAdapter extends AnimatedExpandableListView.Animat
 
         TimeSeries timeSeries = timeseries.get(groupPosition);
 
-        TextView lblDay = (TextView)row.findViewById(R.id.lblDay);
+        TextView lblTime = (TextView)row.findViewById(R.id.lblTime);
         TextView lblTempHigh = (TextView)row.findViewById(R.id.lblTempHigh);
         TextView lblTempLow = (TextView)row.findViewById(R.id.lblTempLow);
-        TextView lblDate = (TextView)row.findViewById(R.id.lblDate);
         TextView lblPrecipitation = (TextView)row.findViewById(R.id.lblPrecipitation);
         ImageView weatherIcon = (ImageView) row.findViewById(R.id.iVWeatherIcon);
 
         weatherIcon.setImageResource(GroupIconHelper.setWeatherIcon(timeSeries));
-        lblDate.setText(timeseries.get(groupPosition).getTime());
+
 
         String precipitation = timeSeries.getPrecipitationTotal();
 
         lblPrecipitation.setText(precipitation);
 
-        String day = TimeHelper.getDay(timeSeries.getTime());
-        lblDay.setText(day);
-        String date = TimeHelper.getDate(timeSeries.getTime());
-        lblDate.setText(date);
+        String time = TimeHelper.getTime(timeSeries.getTime());
+        lblTime.setText(time);
 
         HashMap<String,String> highestLowestTemp= TemperatureHelper.getHighestLowestTemperature(location,timeSeries.getTime());
 
@@ -145,8 +136,8 @@ public class ExpandableListViewAdapter extends AnimatedExpandableListView.Animat
         windGusts.setText(timeSeries.getWindGusts());
         visibility.setText(timeSeries.getVisibility());
         // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
-        humidity.setText(timeSeries.getRelativeHumidity());
-        thunder.setText(timeSeries.getProbabilityForThunder());
+       humidity.setText(timeSeries.getRelativeHumidity());
+       thunder.setText(timeSeries.getProbabilityForThunder());
         snow.setText(timeSeries.getPrecipitationSnow());
         // form.setText(timeSeries.getPrecipitationForm());
         windDirectionText.setText(row.getResources().getString(ChildIconHelper.setWindDIrection(timeSeries)));
@@ -159,56 +150,13 @@ public class ExpandableListViewAdapter extends AnimatedExpandableListView.Animat
         return 1;
     }
 
-    /*@Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        View row;
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = infalInflater.inflate(R.layout.expandable_listitem, null);
-        }else {
-            // reuse old row view to save time/battery
-            row = convertView;
-        }
 
-        TextView temp = (TextView)row.findViewById(R.id.lblTemp);
-        TextView windSpeed = (TextView)row.findViewById(R.id.lblWindSpeed);
-        ImageView windDirection = (ImageView)row.findViewById(R.id.imgWindDirection);
-        TextView windGusts = (TextView)row.findViewById(R.id.lblWindGusts);
-        TextView visibility = (TextView)row.findViewById(R.id.lblVisibility);
-        //TextView totalAmountOfClouds = (TextView)row.findViewById(R.id.lblTotalAmountOfClouds);
-        TextView humidity = (TextView)row.findViewById(R.id.lblHumidity);
-        TextView thunder = (TextView)row.findViewById(R.id.lblProbabilityOfThunder);
-        TextView snow = (TextView)row.findViewById(R.id.lblSnow);
-        TextView windDirectionText = (TextView)row.findViewById(R.id.lblWindDirection);
-        //TextView form = (TextView)row.findViewById(R.id.lblForm);
-
-        TimeSeries timeSeries = timeseries.get(groupPosition);
-
-        temp.setText(timeSeries.getAirTemperature() + row.getResources().getString(R.string.degrees));
-
-        windSpeed.setText(timeSeries.getWindSpeed());
-        windDirection.setImageResource(ChildIconHelper.setCompassIcon(timeSeries));
-        windGusts.setText(timeSeries.getWindGusts());
-        visibility.setText(timeSeries.getVisibility());
-        // totalAmountOfClouds.setText(timeSeries.getTotalAmountOfCloud());
-        humidity.setText(timeSeries.getRelativeHumidity());
-        thunder.setText(timeSeries.getProbabilityForThunder());
-        snow.setText(timeSeries.getPrecipitationSnow());
-        // form.setText(timeSeries.getPrecipitationForm());
-        windDirectionText.setText(row.getResources().getString(ChildIconHelper.setWindDIrection(timeSeries)));
-
-        return row;
-    }*/
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
     }
 
-/*    @Override
-    public int getChildrenCount(int groupPosition) {
-        return 1;
-    }*/
+
 
 }
